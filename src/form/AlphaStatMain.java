@@ -5,13 +5,17 @@
  */
 package form;
 
+import datetime.CurrentDate;
 import db_connect.JavaDBConnect;
+import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
+import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -38,6 +42,8 @@ public class AlphaStatMain extends javax.swing.JFrame {
         connection = JavaDBConnect.dbConnect();
         updateStudentInfoTable();
         updateStudentShowInfo();
+        menuDate.setText(CurrentDate.getCurrentDate());
+        menuDate.setForeground(Color.blue);
     }
 
     /**
@@ -51,6 +57,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
 
         jToolBar1 = new javax.swing.JToolBar();
         btnSingOut = new javax.swing.JButton();
+        btnOffHelp = new javax.swing.JButton();
         panelCont = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         panelDataTable = new javax.swing.JPanel();
@@ -91,9 +98,10 @@ public class AlphaStatMain extends javax.swing.JFrame {
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
         mIteamOffHelp = new javax.swing.JMenuItem();
+        mItemWebHelp = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
-        jMenu6 = new javax.swing.JMenu();
+        menuDate = new javax.swing.JMenu();
+        menuTime = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -112,6 +120,18 @@ public class AlphaStatMain extends javax.swing.JFrame {
             }
         });
         jToolBar1.add(btnSingOut);
+
+        btnOffHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/offlinehelp.png"))); // NOI18N
+        btnOffHelp.setText(" Help ");
+        btnOffHelp.setFocusable(false);
+        btnOffHelp.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        btnOffHelp.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        btnOffHelp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnOffHelpActionPerformed(evt);
+            }
+        });
+        jToolBar1.add(btnOffHelp);
 
         panelCont.setBackground(new java.awt.Color(102, 102, 255));
         panelCont.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Action panel", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Agency FB", 1, 16), new java.awt.Color(0, 51, 153))); // NOI18N
@@ -456,16 +476,26 @@ public class AlphaStatMain extends javax.swing.JFrame {
         });
         jMenu3.add(mIteamOffHelp);
 
+        mItemWebHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
+        mItemWebHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/webhelp.png"))); // NOI18N
+        mItemWebHelp.setText("WenHelp");
+        mItemWebHelp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mItemWebHelpActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mItemWebHelp);
+
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText(" About ");
         jMenuBar1.add(jMenu4);
 
-        jMenu5.setText(" Date ");
-        jMenuBar1.add(jMenu5);
+        menuDate.setText(" Date ");
+        jMenuBar1.add(menuDate);
 
-        jMenu6.setText(" Time ");
-        jMenuBar1.add(jMenu6);
+        menuTime.setText(" Time ");
+        jMenuBar1.add(menuTime);
 
         setJMenuBar(jMenuBar1);
 
@@ -552,22 +582,22 @@ public class AlphaStatMain extends javax.swing.JFrame {
     }//GEN-LAST:event_tblStudentShowInfoMouseClicked
 
     private void tblStudentShowInfoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tblStudentShowInfoKeyReleased
-        if(evt.getKeyCode()==KeyEvent.VK_UP || evt.getKeyCode()==KeyEvent.VK_DOWN){
-             try {
-            int row = tblStudentShowInfo.getSelectedRow();
-            String tableClick = (tblStudentShowInfo.getModel().getValueAt(row, 0).toString());
-            String sql = "Select * from Student_info where Student_id = '" + tableClick + "'";
-            pst = connection.prepareStatement(sql);
-            rs = pst.executeQuery();
-            if (rs.next()) {
-                getValue();
+        if (evt.getKeyCode() == KeyEvent.VK_UP || evt.getKeyCode() == KeyEvent.VK_DOWN) {
+            try {
+                int row = tblStudentShowInfo.getSelectedRow();
+                String tableClick = (tblStudentShowInfo.getModel().getValueAt(row, 0).toString());
+                String sql = "Select * from Student_info where Student_id = '" + tableClick + "'";
+                pst = connection.prepareStatement(sql);
+                rs = pst.executeQuery();
+                if (rs.next()) {
+                    getValue();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(rootPane, ex);
             }
-        } catch (SQLException ex) {
-                 Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
-                 JOptionPane.showMessageDialog(rootPane, ex);
         }
-        }
-        
+
     }//GEN-LAST:event_tblStudentShowInfoKeyReleased
 
     private void tblStudentInfoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStudentInfoMouseClicked
@@ -580,11 +610,22 @@ public class AlphaStatMain extends javax.swing.JFrame {
             Desktop.getDesktop().open(new File("files\\help.txt"));
         } catch (Exception e) {
             JOptionPane.showMessageDialog(panelCont, "Error opening file");
-                        JOptionPane.showMessageDialog(panelCont, e.getMessage());
-
         }
 
     }//GEN-LAST:event_mIteamOffHelpActionPerformed
+
+    private void btnOffHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnOffHelpActionPerformed
+        mIteamOffHelpActionPerformed(evt);        // TODO add your handling code here:
+    }//GEN-LAST:event_btnOffHelpActionPerformed
+
+    private void mItemWebHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemWebHelpActionPerformed
+        try {
+            Desktop.getDesktop().browse(URI.create("https://www.facebook.com/DragovicMilosh"));
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_mItemWebHelpActionPerformed
 
     /**
      * @param args the command line arguments
@@ -623,6 +664,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnOffHelp;
     private javax.swing.JButton btnSingOut;
     private javax.swing.JComboBox<String> comboGender;
     private javax.swing.JLabel jLabel1;
@@ -638,8 +680,6 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu2;
     private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
-    private javax.swing.JMenu jMenu6;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JPanel jPanel7;
     private javax.swing.JScrollPane jScrollPane1;
@@ -649,6 +689,9 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem mIteamClose;
     private javax.swing.JMenuItem mIteamExit;
     private javax.swing.JMenuItem mIteamOffHelp;
+    private javax.swing.JMenuItem mItemWebHelp;
+    private javax.swing.JMenu menuDate;
+    private javax.swing.JMenu menuTime;
     private javax.swing.JPanel panelChart;
     private javax.swing.JPanel panelCont;
     private javax.swing.JPanel panelDataTable;
@@ -706,7 +749,7 @@ private void init() {
 
     }
 
-    private void getValue() { 
+    private void getValue() {
         try {
             txtStudentId.setText(rs.getString("Student_id"));
             txtFirstName.setText(rs.getString("First_name"));
@@ -719,6 +762,7 @@ private void init() {
             comboGender.setSelectedItem(rs.getString("Gender"));
         } catch (SQLException ex) {
             Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(rootPane, ex);        }
+            JOptionPane.showMessageDialog(rootPane, ex);
+        }
     }
 }
