@@ -6,10 +6,12 @@
 package form;
 
 import db_connect.JavaDBConnect;
+import java.awt.Desktop;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -88,11 +90,13 @@ public class AlphaStatMain extends javax.swing.JFrame {
         mIteamExit = new javax.swing.JMenuItem();
         jMenu2 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
+        mIteamOffHelp = new javax.swing.JMenuItem();
         jMenu4 = new javax.swing.JMenu();
         jMenu5 = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jToolBar1.setFloatable(false);
         jToolBar1.setRollover(true);
@@ -126,6 +130,11 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblStudentInfo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblStudentInfoMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblStudentInfo);
 
         javax.swing.GroupLayout panelDataTableLayout = new javax.swing.GroupLayout(panelDataTable);
@@ -340,9 +349,9 @@ public class AlphaStatMain extends javax.swing.JFrame {
                             .addComponent(jLabel3)
                             .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
-                        .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel4)
-                            .addComponent(txtDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel4))))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
 
@@ -436,6 +445,17 @@ public class AlphaStatMain extends javax.swing.JFrame {
         jMenuBar1.add(jMenu2);
 
         jMenu3.setText(" Help ");
+
+        mIteamOffHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
+        mIteamOffHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/offlinehelp.png"))); // NOI18N
+        mIteamOffHelp.setText("Offline help");
+        mIteamOffHelp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mIteamOffHelpActionPerformed(evt);
+            }
+        });
+        jMenu3.add(mIteamOffHelp);
+
         jMenuBar1.add(jMenu3);
 
         jMenu4.setText(" About ");
@@ -550,6 +570,22 @@ public class AlphaStatMain extends javax.swing.JFrame {
         
     }//GEN-LAST:event_tblStudentShowInfoKeyReleased
 
+    private void tblStudentInfoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStudentInfoMouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tblStudentInfoMouseClicked
+
+    private void mIteamOffHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mIteamOffHelpActionPerformed
+        try {
+//          Runtime.getRuntime().exec("notepad "+"files\\help.txt");    //moze i ovako, ali bolje sa Desktop
+            Desktop.getDesktop().open(new File("files\\help.txt"));
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(panelCont, "Error opening file");
+                        JOptionPane.showMessageDialog(panelCont, e.getMessage());
+
+        }
+
+    }//GEN-LAST:event_mIteamOffHelpActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -612,6 +648,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JMenuItem mIteamClose;
     private javax.swing.JMenuItem mIteamExit;
+    private javax.swing.JMenuItem mIteamOffHelp;
     private javax.swing.JPanel panelChart;
     private javax.swing.JPanel panelCont;
     private javax.swing.JPanel panelDataTable;
