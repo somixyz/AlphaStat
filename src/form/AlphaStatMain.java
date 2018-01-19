@@ -5,7 +5,7 @@
  */
 package form;
 
-import datetime.CurrentDate;
+import datetime.CurrentDateAndTime;
 import db_connect.JavaDBConnect;
 import java.awt.Color;
 import java.awt.Desktop;
@@ -42,8 +42,6 @@ public class AlphaStatMain extends javax.swing.JFrame {
         connection = JavaDBConnect.dbConnect();
         updateStudentInfoTable();
         updateStudentShowInfo();
-        menuDate.setText(CurrentDate.getCurrentDate());
-        menuDate.setForeground(Color.blue);
     }
 
     /**
@@ -67,41 +65,49 @@ public class AlphaStatMain extends javax.swing.JFrame {
         panelStatistics = new javax.swing.JPanel();
         panelDocument = new javax.swing.JPanel();
         panelEmail = new javax.swing.JPanel();
-        jPanel7 = new javax.swing.JPanel();
+        jPanelWelcome = new javax.swing.JPanel();
+        lblWelcome = new javax.swing.JLabel();
+        btnSearch = new javax.swing.JButton();
+        txtSearch = new javax.swing.JTextField();
+        jPanelCommands = new javax.swing.JPanel();
+        btnAdd = new javax.swing.JButton();
+        btnEdit = new javax.swing.JButton();
+        btnDelete = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
         panelStudentInfo = new javax.swing.JPanel();
-        jLabel1 = new javax.swing.JLabel();
+        lblStudentId = new javax.swing.JLabel();
         txtStudentId = new javax.swing.JTextField();
         txtFirstName = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
+        lblFirstName = new javax.swing.JLabel();
         txtLastName = new javax.swing.JTextField();
-        jLabel3 = new javax.swing.JLabel();
+        lblLastName = new javax.swing.JLabel();
         txtDepartment = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+        lblDepartment = new javax.swing.JLabel();
+        lblAge = new javax.swing.JLabel();
         txtAge = new javax.swing.JTextField();
         txtHeight = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        jLabel7 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
+        lblHeight = new javax.swing.JLabel();
+        lblWeight = new javax.swing.JLabel();
+        lblGender = new javax.swing.JLabel();
         txtWeight = new javax.swing.JTextField();
-        jLabel9 = new javax.swing.JLabel();
+        lblBlood = new javax.swing.JLabel();
         txtBlood = new javax.swing.JTextField();
         comboGender = new javax.swing.JComboBox<>();
         panelTableStudentShowInfo = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         tblStudentShowInfo = new javax.swing.JTable();
         panelPhoto = new javax.swing.JPanel();
-        jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        menuBarMain = new javax.swing.JMenuBar();
+        mnuIteamFile = new javax.swing.JMenu();
         mIteamClose = new javax.swing.JMenuItem();
         mIteamExit = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jMenu3 = new javax.swing.JMenu();
+        mnuIteamEdit = new javax.swing.JMenu();
+        mnuIteamHelp = new javax.swing.JMenu();
         mIteamOffHelp = new javax.swing.JMenuItem();
         mItemWebHelp = new javax.swing.JMenuItem();
-        jMenu4 = new javax.swing.JMenu();
-        menuDate = new javax.swing.JMenu();
-        menuTime = new javax.swing.JMenu();
+        mnuIteamAbout = new javax.swing.JMenu();
+        mnuIteamDate = new javax.swing.JMenu();
+        mnuIteamTime = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -136,6 +142,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         panelCont.setBackground(new java.awt.Color(102, 102, 255));
         panelCont.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Action panel", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Agency FB", 1, 16), new java.awt.Color(0, 51, 153))); // NOI18N
 
+        jTabbedPane1.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         jTabbedPane1.setFont(new java.awt.Font("Tahoma", 1, 12)); // NOI18N
 
         tblStudentInfo.setFont(new java.awt.Font("Tahoma", 0, 14)); // NOI18N
@@ -150,6 +157,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblStudentInfo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         tblStudentInfo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblStudentInfoMouseClicked(evt);
@@ -163,8 +171,8 @@ public class AlphaStatMain extends javax.swing.JFrame {
             panelDataTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelDataTableLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 705, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(555, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 785, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(475, Short.MAX_VALUE))
         );
         panelDataTableLayout.setVerticalGroup(
             panelDataTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -241,52 +249,120 @@ public class AlphaStatMain extends javax.swing.JFrame {
             .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
         );
 
-        jPanel7.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+        jPanelWelcome.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
-        javax.swing.GroupLayout jPanel7Layout = new javax.swing.GroupLayout(jPanel7);
-        jPanel7.setLayout(jPanel7Layout);
-        jPanel7Layout.setHorizontalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 244, Short.MAX_VALUE)
+        lblWelcome.setFont(new java.awt.Font("Agency FB", 1, 16)); // NOI18N
+        lblWelcome.setForeground(new java.awt.Color(0, 0, 255));
+        lblWelcome.setText("Welcome ");
+
+        btnSearch.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/search.png"))); // NOI18N
+
+        txtSearch.setText("Search");
+
+        jPanelCommands.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Commands", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Agency FB", 1, 14), new java.awt.Color(0, 0, 255))); // NOI18N
+
+        btnAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/add.png"))); // NOI18N
+        btnAdd.setText(" Add ");
+
+        btnEdit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/edit.png"))); // NOI18N
+        btnEdit.setText(" Edit ");
+
+        btnDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/delete.png"))); // NOI18N
+        btnDelete.setText(" Delete ");
+
+        btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/clear.png"))); // NOI18N
+        btnClear.setText(" Clear ");
+
+        javax.swing.GroupLayout jPanelCommandsLayout = new javax.swing.GroupLayout(jPanelCommands);
+        jPanelCommands.setLayout(jPanelCommandsLayout);
+        jPanelCommandsLayout.setHorizontalGroup(
+            jPanelCommandsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelCommandsLayout.createSequentialGroup()
+                .addGap(34, 34, 34)
+                .addGroup(jPanelCommandsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(btnDelete, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnEdit, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAdd, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnClear, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
-        jPanel7Layout.setVerticalGroup(
-            jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+        jPanelCommandsLayout.setVerticalGroup(
+            jPanelCommandsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCommandsLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(btnAdd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnEdit)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnDelete)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnClear)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanelWelcomeLayout = new javax.swing.GroupLayout(jPanelWelcome);
+        jPanelWelcome.setLayout(jPanelWelcomeLayout);
+        jPanelWelcomeLayout.setHorizontalGroup(
+            jPanelWelcomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelWelcomeLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanelWelcomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelWelcomeLayout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 93, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(69, 69, 69))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelWelcomeLayout.createSequentialGroup()
+                        .addComponent(txtSearch)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnSearch, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(25, 25, 25))))
+            .addComponent(jPanelCommands, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanelWelcomeLayout.setVerticalGroup(
+            jPanelWelcomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelWelcomeLayout.createSequentialGroup()
+                .addComponent(lblWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanelWelcomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnSearch, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtSearch))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanelCommands, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelStudentInfo.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Student info", javax.swing.border.TitledBorder.CENTER, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Agency FB", 1, 16), new java.awt.Color(0, 51, 204))); // NOI18N
 
-        jLabel1.setText("Student id");
+        lblStudentId.setText("Student id");
 
         txtStudentId.setText(" ");
 
         txtFirstName.setText(" ");
 
-        jLabel2.setText("First name");
+        lblFirstName.setText("First name");
 
         txtLastName.setText(" ");
 
-        jLabel3.setText("Last name");
+        lblLastName.setText("Last name");
 
         txtDepartment.setText(" ");
 
-        jLabel4.setText("Department");
+        lblDepartment.setText("Department");
 
-        jLabel5.setText("Age");
+        lblAge.setText("Age");
 
         txtAge.setText(" ");
 
         txtHeight.setText(" ");
 
-        jLabel6.setText("Height");
+        lblHeight.setText("Height");
 
-        jLabel7.setText("Weight");
+        lblWeight.setText("Weight");
 
-        jLabel8.setText("Gender");
+        lblGender.setText("Gender");
 
         txtWeight.setText(" ");
 
-        jLabel9.setText("Blood");
+        lblBlood.setText("Blood");
 
         txtBlood.setText(" ");
 
@@ -300,28 +376,28 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelStudentInfoLayout.createSequentialGroup()
-                        .addComponent(jLabel2)
+                        .addComponent(lblFirstName)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelStudentInfoLayout.createSequentialGroup()
-                        .addComponent(jLabel1)
+                        .addComponent(lblStudentId)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(txtStudentId, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelStudentInfoLayout.createSequentialGroup()
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
+                            .addComponent(lblLastName)
+                            .addComponent(lblDepartment))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(txtDepartment, javax.swing.GroupLayout.DEFAULT_SIZE, 90, Short.MAX_VALUE)
                             .addComponent(txtLastName))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel8)
-                    .addComponent(jLabel7)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel9))
+                    .addComponent(lblGender)
+                    .addComponent(lblWeight)
+                    .addComponent(lblHeight)
+                    .addComponent(lblAge)
+                    .addComponent(lblBlood))
                 .addGap(40, 40, 40)
                 .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(txtBlood)
@@ -338,40 +414,40 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(panelStudentInfoLayout.createSequentialGroup()
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel5)
+                            .addComponent(lblAge)
                             .addComponent(txtAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel6)
+                            .addComponent(lblHeight)
                             .addComponent(txtHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel7)
+                            .addComponent(lblWeight)
                             .addComponent(txtWeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel8)
+                            .addComponent(lblGender)
                             .addComponent(comboGender, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel9)
+                            .addComponent(lblBlood)
                             .addComponent(txtBlood, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(panelStudentInfoLayout.createSequentialGroup()
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel1)
+                            .addComponent(lblStudentId)
                             .addComponent(txtStudentId, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel2)
+                            .addComponent(lblFirstName)
                             .addComponent(txtFirstName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
+                            .addComponent(lblLastName)
                             .addComponent(txtLastName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(18, 18, 18)
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4))))
+                            .addComponent(lblDepartment))))
                 .addContainerGap(17, Short.MAX_VALUE))
         );
 
@@ -390,6 +466,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
+        tblStudentShowInfo.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
         tblStudentShowInfo.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 tblStudentShowInfoMouseClicked(evt);
@@ -432,10 +509,10 @@ public class AlphaStatMain extends javax.swing.JFrame {
             .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        jMenu1.setText(" File ");
-        jMenu1.addActionListener(new java.awt.event.ActionListener() {
+        mnuIteamFile.setText(" File ");
+        mnuIteamFile.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenu1ActionPerformed(evt);
+                mnuIteamFileActionPerformed(evt);
             }
         });
 
@@ -447,7 +524,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 mIteamCloseActionPerformed(evt);
             }
         });
-        jMenu1.add(mIteamClose);
+        mnuIteamFile.add(mIteamClose);
 
         mIteamExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F4, java.awt.event.InputEvent.ALT_MASK));
         mIteamExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/exit.png"))); // NOI18N
@@ -457,14 +534,14 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 mIteamExitActionPerformed(evt);
             }
         });
-        jMenu1.add(mIteamExit);
+        mnuIteamFile.add(mIteamExit);
 
-        jMenuBar1.add(jMenu1);
+        menuBarMain.add(mnuIteamFile);
 
-        jMenu2.setText(" Edit ");
-        jMenuBar1.add(jMenu2);
+        mnuIteamEdit.setText(" Edit ");
+        menuBarMain.add(mnuIteamEdit);
 
-        jMenu3.setText(" Help ");
+        mnuIteamHelp.setText(" Help ");
 
         mIteamOffHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
         mIteamOffHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/offlinehelp.png"))); // NOI18N
@@ -474,30 +551,30 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 mIteamOffHelpActionPerformed(evt);
             }
         });
-        jMenu3.add(mIteamOffHelp);
+        mnuIteamHelp.add(mIteamOffHelp);
 
         mItemWebHelp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_W, java.awt.event.InputEvent.CTRL_MASK));
         mItemWebHelp.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/webhelp.png"))); // NOI18N
-        mItemWebHelp.setText("WenHelp");
+        mItemWebHelp.setText("WebHelp");
         mItemWebHelp.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 mItemWebHelpActionPerformed(evt);
             }
         });
-        jMenu3.add(mItemWebHelp);
+        mnuIteamHelp.add(mItemWebHelp);
 
-        jMenuBar1.add(jMenu3);
+        menuBarMain.add(mnuIteamHelp);
 
-        jMenu4.setText(" About ");
-        jMenuBar1.add(jMenu4);
+        mnuIteamAbout.setText(" About ");
+        menuBarMain.add(mnuIteamAbout);
 
-        menuDate.setText(" Date ");
-        jMenuBar1.add(menuDate);
+        mnuIteamDate.setText(" Date ");
+        menuBarMain.add(mnuIteamDate);
 
-        menuTime.setText(" Time ");
-        jMenuBar1.add(menuTime);
+        mnuIteamTime.setText(" Time ");
+        menuBarMain.add(mnuIteamTime);
 
-        setJMenuBar(jMenuBar1);
+        setJMenuBar(menuBarMain);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -507,7 +584,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
             .addComponent(panelCont, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanelWelcome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(panelStudentInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -522,7 +599,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanelWelcome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelStudentInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelTableStudentShowInfo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(panelPhoto, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -553,9 +630,9 @@ public class AlphaStatMain extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mIteamCloseActionPerformed
 
-    private void jMenu1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenu1ActionPerformed
+    private void mnuIteamFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mnuIteamFileActionPerformed
         System.exit(0);
-    }//GEN-LAST:event_jMenu1ActionPerformed
+    }//GEN-LAST:event_mnuIteamFileActionPerformed
 
     private void mIteamExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mIteamExitActionPerformed
         System.exit(0);
@@ -620,7 +697,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
 
     private void mItemWebHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemWebHelpActionPerformed
         try {
-            Desktop.getDesktop().browse(URI.create("https://www.facebook.com/DragovicMilosh"));
+            Desktop.getDesktop().browse(URI.create("https://www.google.com"));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, ex);
             Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -664,34 +741,41 @@ public class AlphaStatMain extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnOffHelp;
+    private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSingOut;
     private javax.swing.JComboBox<String> comboGender;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
-    private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
-    private javax.swing.JLabel jLabel9;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JPanel jPanel7;
+    private javax.swing.JPanel jPanelCommands;
+    private javax.swing.JPanel jPanelWelcome;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JLabel lblAge;
+    private javax.swing.JLabel lblBlood;
+    private javax.swing.JLabel lblDepartment;
+    private javax.swing.JLabel lblFirstName;
+    private javax.swing.JLabel lblGender;
+    private javax.swing.JLabel lblHeight;
+    private javax.swing.JLabel lblLastName;
+    private javax.swing.JLabel lblStudentId;
+    private javax.swing.JLabel lblWeight;
+    private javax.swing.JLabel lblWelcome;
     private javax.swing.JMenuItem mIteamClose;
     private javax.swing.JMenuItem mIteamExit;
     private javax.swing.JMenuItem mIteamOffHelp;
     private javax.swing.JMenuItem mItemWebHelp;
-    private javax.swing.JMenu menuDate;
-    private javax.swing.JMenu menuTime;
+    private javax.swing.JMenuBar menuBarMain;
+    private javax.swing.JMenu mnuIteamAbout;
+    private javax.swing.JMenu mnuIteamDate;
+    private javax.swing.JMenu mnuIteamEdit;
+    private javax.swing.JMenu mnuIteamFile;
+    private javax.swing.JMenu mnuIteamHelp;
+    private javax.swing.JMenu mnuIteamTime;
     private javax.swing.JPanel panelChart;
     private javax.swing.JPanel panelCont;
     private javax.swing.JPanel panelDataTable;
@@ -709,6 +793,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtHeight;
     private javax.swing.JTextField txtLastName;
+    private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtStudentId;
     private javax.swing.JTextField txtWeight;
     // End of variables declaration//GEN-END:variables
@@ -716,6 +801,23 @@ private void init() {
         setLocationRelativeTo(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
+        
+        //settings title date and time
+        mnuIteamDate.setText(CurrentDateAndTime.getCurrentDate());
+        mnuIteamDate.setForeground(Color.blue);
+        mnuIteamTime.setText(CurrentDateAndTime.getCurrentTime());
+        mnuIteamTime.setForeground(Color.red);
+//        Runnable trd = new Runnable() {
+//            @Override
+//            public void run() {
+//                menuTime.setText(CurrentDateAndTime.getCurrentTime());
+//                
+//                
+//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//            }
+//        }; trd.run();
+//        menuTime.setForeground(Color.red);
+        
     }
 
     public void close() {
