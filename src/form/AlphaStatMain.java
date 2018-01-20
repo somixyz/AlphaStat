@@ -10,6 +10,9 @@ import db_connect.JavaDBConnect;
 import event.SearchEvent;
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,6 +22,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -28,9 +33,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
+import snap.Snap;
 
 /**
  *
@@ -104,11 +112,17 @@ public class AlphaStatMain extends javax.swing.JFrame {
         jScrollPane2 = new javax.swing.JScrollPane();
         tblStudentShowInfo = new javax.swing.JTable();
         panelPhoto = new javax.swing.JPanel();
+        paneImgPlace = new javax.swing.JPanel();
+        lblImage = new javax.swing.JLabel();
+        btnUpload = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
+        btnSaveImg = new javax.swing.JButton();
         menuBarMain = new javax.swing.JMenuBar();
         mnuIteamFile = new javax.swing.JMenu();
         mIteamClose = new javax.swing.JMenuItem();
         mIteamExit = new javax.swing.JMenuItem();
         mnuIteamEdit = new javax.swing.JMenu();
+        mIteamSnap = new javax.swing.JMenuItem();
         mnuIteamHelp = new javax.swing.JMenu();
         mIteamOffHelp = new javax.swing.JMenuItem();
         mItemWebHelp = new javax.swing.JMenuItem();
@@ -455,7 +469,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
                         .addGroup(panelStudentInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtDepartment, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lblDepartment))))
-                .addContainerGap(17, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         panelTableStudentShowInfo.setBackground(new java.awt.Color(204, 204, 255));
@@ -492,7 +506,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
             panelTableStudentShowInfoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelTableStudentShowInfoLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 234, Short.MAX_VALUE)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 240, Short.MAX_VALUE)
                 .addContainerGap())
         );
         panelTableStudentShowInfoLayout.setVerticalGroup(
@@ -505,15 +519,64 @@ public class AlphaStatMain extends javax.swing.JFrame {
 
         panelPhoto.setBorder(javax.swing.BorderFactory.createEtchedBorder());
 
+        paneImgPlace.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        lblImage.setText(" ");
+
+        javax.swing.GroupLayout paneImgPlaceLayout = new javax.swing.GroupLayout(paneImgPlace);
+        paneImgPlace.setLayout(paneImgPlaceLayout);
+        paneImgPlaceLayout.setHorizontalGroup(
+            paneImgPlaceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneImgPlaceLayout.createSequentialGroup()
+                .addContainerGap(51, Short.MAX_VALUE)
+                .addComponent(lblImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(28, 28, 28))
+        );
+        paneImgPlaceLayout.setVerticalGroup(
+            paneImgPlaceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(paneImgPlaceLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(lblImage, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        btnUpload.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/upload.png"))); // NOI18N
+        btnUpload.setText("Upload");
+
+        jTextField1.setText(" ");
+
+        btnSaveImg.setText(" Save ");
+
         javax.swing.GroupLayout panelPhotoLayout = new javax.swing.GroupLayout(panelPhoto);
         panelPhoto.setLayout(panelPhotoLayout);
         panelPhotoLayout.setHorizontalGroup(
             panelPhotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 301, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPhotoLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(panelPhotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelPhotoLayout.createSequentialGroup()
+                        .addGap(10, 10, 10)
+                        .addComponent(btnSaveImg, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(panelPhotoLayout.createSequentialGroup()
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(btnUpload, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPhotoLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(paneImgPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         panelPhotoLayout.setVerticalGroup(
             panelPhotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGroup(panelPhotoLayout.createSequentialGroup()
+                .addComponent(paneImgPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelPhotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnUpload)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSaveImg)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         mnuIteamFile.setText(" File ");
@@ -546,6 +609,12 @@ public class AlphaStatMain extends javax.swing.JFrame {
         menuBarMain.add(mnuIteamFile);
 
         mnuIteamEdit.setText(" Edit ");
+
+        mIteamSnap.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
+        mIteamSnap.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/snap.png"))); // NOI18N
+        mIteamSnap.setText("Snap");
+        mnuIteamEdit.add(mIteamSnap);
+
         menuBarMain.add(mnuIteamEdit);
 
         mnuIteamHelp.setText(" Help ");
@@ -753,14 +822,17 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnOffHelp;
+    private javax.swing.JButton btnSaveImg;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSingOut;
+    private javax.swing.JButton btnUpload;
     private javax.swing.JComboBox<String> comboGender;
     private javax.swing.JPanel jPanelCommands;
     private javax.swing.JPanel jPanelWelcome;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblAge;
     private javax.swing.JLabel lblBlood;
@@ -768,6 +840,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JLabel lblFirstName;
     private javax.swing.JLabel lblGender;
     private javax.swing.JLabel lblHeight;
+    private javax.swing.JLabel lblImage;
     private javax.swing.JLabel lblLastName;
     private javax.swing.JLabel lblStudentId;
     private javax.swing.JLabel lblWeight;
@@ -775,6 +848,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem mIteamClose;
     private javax.swing.JMenuItem mIteamExit;
     private javax.swing.JMenuItem mIteamOffHelp;
+    private javax.swing.JMenuItem mIteamSnap;
     private javax.swing.JMenuItem mItemWebHelp;
     private javax.swing.JMenuBar menuBarMain;
     private javax.swing.JMenu mnuIteamAbout;
@@ -783,6 +857,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JMenu mnuIteamFile;
     private javax.swing.JMenu mnuIteamHelp;
     private javax.swing.JMenu mnuIteamTime;
+    private javax.swing.JPanel paneImgPlace;
     private javax.swing.JPanel panelChart;
     private javax.swing.JPanel panelCont;
     private javax.swing.JPanel panelDataTable;
@@ -859,10 +934,31 @@ private void init() {
             txtWeight.setText(rs.getString("Weight"));
             txtBlood.setText(rs.getString("Blood"));
             comboGender.setSelectedItem(rs.getString("Gender"));
+            
+            // byte format of image
+            byte[] imageData = rs.getBytes("Photo");
+            ImageIcon format = new ImageIcon(scaledImage(imageData, lblImage.getWidth(),lblImage.getHeight()));
+            lblImage.setIcon(format);
         } catch (SQLException ex) {
             Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, ex);
         }
+    }
+    private Image scaledImage(byte[] img, int w, int h ){
+        BufferedImage resizedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        try {
+            Graphics2D g2 = resizedImage.createGraphics();
+            g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+            
+            //convert byte arrat back to buffered image
+            ByteArrayInputStream in = new ByteArrayInputStream(img);
+            BufferedImage bImageFromConvert = ImageIO.read(in);
+            
+            g2.drawImage(bImageFromConvert, 0, 0,w,h,null);
+            g2.dispose();
+        } catch (Exception ex) {
+           JOptionPane.showMessageDialog(panelCont,ex);
+    }  return  resizedImage;
     }
     private void setClearValue(){
             txtStudentId.setText(null);
@@ -942,12 +1038,24 @@ private void init() {
     btnEdit.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
-            String sql = "upate Student_info (Student_id,First_name,Last_name,Department,Age,Height,Weight,Gender,Blood)"
-                    + "values(?,?,?,?,?,?,?,?,?)";
+            String sql = "update Student_info set First_name=?,Last_name=?,Department=?,Age=?,Height=?,Weight=?,Gender=?,Blood=?"
+                    + " where Student_id=?";
             try {
-                JOptionPane.showMessageDialog(null, "Saved");
+                pst=connection.prepareStatement(sql);
+                pst.setString(1, txtFirstName.getText());
+                pst.setString(2, txtLastName.getText());
+                pst.setString(3, txtDepartment.getText());
+                pst.setString(4, txtAge.getText());
+                pst.setString(5, txtHeight.getText());
+                pst.setString(6, txtWeight.getText());
+                pst.setString(7, comboGender.getSelectedItem().toString());
+                pst.setString(8, txtBlood.getText());  
+                pst.setString(9, txtStudentId.getText()); 
+                pst.execute();
+                JOptionPane.showMessageDialog(null, "Updated");
             } catch (Exception ex) {
                  JOptionPane.showMessageDialog(null, "Error, some data are not entered");
+                 
             }
             updateStudentInfoTable();
             updateStudentShowInfo();
@@ -959,8 +1067,39 @@ private void init() {
            setClearValue();
         }
     });
+    btnDelete.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            int p = JOptionPane.showConfirmDialog(panelCont, "Do you want to delete ?", "Delete" ,JOptionPane.YES_NO_OPTION);
+            if(p==0){
+                String sql="delete from Student_info where Student_id=?";
+                try {
+                    pst=connection.prepareStatement(sql);
+                    pst.setString(1, txtStudentId.getText());
+                    pst.execute();
+                    JOptionPane.showMessageDialog(rootPane, "Deleted");
+                } catch (SQLException ex) {
+                    Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
+                    JOptionPane.showMessageDialog(rootPane, ex);
+                }
+            updateStudentInfoTable();
+            updateStudentShowInfo();
+            }  } 
+    }); 
+    mIteamSnap.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            try {
+                Snap.saveScreenShot(panelStudentInfo, "Student-info img.png");
+                JOptionPane.showMessageDialog(rootPane, "Image is captured");
+            } catch (Exception ex) {
+                Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
+                JOptionPane.showMessageDialog(rootPane, ex);
+            }
+            
+        }
+    });
    
-    
     }
     
     
