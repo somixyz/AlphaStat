@@ -874,9 +874,7 @@ private void init() {
             txtWeight.setText(null);
             txtBlood.setText(null);
             comboGender.setSelectedItem("Male");
-            }
-    
-    
+            } 
     private void setListeners(){
 //        KeyListener seartchEvent = new SearchEvent(txtSearch);
 //        txtSearch.addKeyListener(seartchEvent);
@@ -916,13 +914,53 @@ private void init() {
             }
         }
     });
-    
+    btnAdd.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String sql = "insert into Student_info (Student_id,First_name,Last_name,Department,Age,Height,Weight,Gender,Blood)"
+                    + "values(?,?,?,?,?,?,?,?,?)";
+            try {
+                pst=connection.prepareStatement(sql);
+                pst.setString(1, txtStudentId.getText());
+                pst.setString(2, txtFirstName.getText());
+                pst.setString(3, txtLastName.getText());
+                pst.setString(4, txtDepartment.getText());
+                pst.setString(5, txtAge.getText());
+                pst.setString(6, txtHeight.getText());
+                pst.setString(7, txtWeight.getText());
+                pst.setString(8, comboGender.getSelectedItem().toString());
+                pst.setString(9, txtBlood.getText()); 
+                pst.execute();
+                JOptionPane.showMessageDialog(null, "Saved");
+            } catch (Exception ex) {
+                 JOptionPane.showMessageDialog(null, "Error, some data are not entered");
+            }
+            updateStudentInfoTable();
+            updateStudentShowInfo();
+        }
+    });
+    btnEdit.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            String sql = "upate Student_info (Student_id,First_name,Last_name,Department,Age,Height,Weight,Gender,Blood)"
+                    + "values(?,?,?,?,?,?,?,?,?)";
+            try {
+                JOptionPane.showMessageDialog(null, "Saved");
+            } catch (Exception ex) {
+                 JOptionPane.showMessageDialog(null, "Error, some data are not entered");
+            }
+            updateStudentInfoTable();
+            updateStudentShowInfo();
+        }
+    });
     btnClear.addActionListener(new ActionListener() {
         @Override
         public void actionPerformed(ActionEvent e) {
            setClearValue();
         }
     });
+   
+    
     }
     
     

@@ -18,7 +18,7 @@ import javax.swing.JOptionPane;
 public class JavaDBConnect {
 
     private static Connection connection = null;
-    
+     
     public static Connection dbConnect(){
         try {
             Class.forName("org.sqlite.JDBC");
