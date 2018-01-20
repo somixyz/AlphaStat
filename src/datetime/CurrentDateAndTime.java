@@ -22,7 +22,7 @@ private static final Calendar cal = new GregorianCalendar();
         return "Current date "+day+"/"+mouth+1+"/"+year;
     }
     
-    public static String getCurrentTime(){
+    public static String getLoggedTime(){
         int second = cal.get(Calendar.SECOND);
         int minutes = cal.get(Calendar.MINUTE);
         int hour = cal.get(Calendar.HOUR);

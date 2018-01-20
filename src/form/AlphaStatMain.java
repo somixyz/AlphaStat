@@ -7,10 +7,16 @@ package form;
 
 import datetime.CurrentDateAndTime;
 import db_connect.JavaDBConnect;
+import event.SearchEvent;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -42,6 +48,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         connection = JavaDBConnect.dbConnect();
         updateStudentInfoTable();
         updateStudentShowInfo();
+        setListeners(); 
     }
 
     /**
@@ -805,18 +812,8 @@ private void init() {
         //settings title date and time
         mnuIteamDate.setText(CurrentDateAndTime.getCurrentDate());
         mnuIteamDate.setForeground(Color.blue);
-        mnuIteamTime.setText(CurrentDateAndTime.getCurrentTime());
+        mnuIteamTime.setText(CurrentDateAndTime.getLoggedTime());
         mnuIteamTime.setForeground(Color.red);
-//        Runnable trd = new Runnable() {
-//            @Override
-//            public void run() {
-//                menuTime.setText(CurrentDateAndTime.getCurrentTime());
-//                
-//                
-//                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//            }
-//        }; trd.run();
-//        menuTime.setForeground(Color.red);
         
     }
 
@@ -851,7 +848,7 @@ private void init() {
 
     }
 
-    private void getValue() {
+    protected void getValue() {
         try {
             txtStudentId.setText(rs.getString("Student_id"));
             txtFirstName.setText(rs.getString("First_name"));
@@ -867,4 +864,67 @@ private void init() {
             JOptionPane.showMessageDialog(rootPane, ex);
         }
     }
+    private void setClearValue(){
+            txtStudentId.setText(null);
+            txtFirstName.setText(null);
+            txtLastName.setText(null);
+            txtDepartment.setText(null);
+            txtAge.setText(null);
+            txtHeight.setText(null);
+            txtWeight.setText(null);
+            txtBlood.setText(null);
+            comboGender.setSelectedItem("Male");
+            }
+    
+    
+    private void setListeners(){
+//        KeyListener seartchEvent = new SearchEvent(txtSearch);
+//        txtSearch.addKeyListener(seartchEvent);
+//        txtSearch.addFocusListener(seartchEvent);
+
+
+    txtSearch.addFocusListener(new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            txtSearch.setText("");
+        } 
+        @Override
+        public void focusLost(FocusEvent e) {
+            txtSearch.setText("Search");
+        }
+    });
+    txtSearch.addKeyListener(new KeyListener() {
+        @Override
+        public void keyTyped(KeyEvent e) {
+        }
+
+        @Override
+        public void keyPressed(KeyEvent e) {
+        }
+
+        @Override
+        public void keyReleased(KeyEvent e) {
+            String sql = "select * from Student_info where Student_id=?";
+            try {
+                pst = connection.prepareStatement(sql);
+                pst.setString(1, txtSearch.getText());
+                rs = pst.executeQuery();
+                if(rs.next()){
+                    getValue();
+                }else{setClearValue();}
+            } catch (Exception ex) {
+            }
+        }
+    });
+    
+    btnClear.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+           setClearValue();
+        }
+    });
+    }
+    
+    
+    
 }
