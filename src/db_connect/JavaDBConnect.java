@@ -26,7 +26,7 @@ public class JavaDBConnect {
             return connection;
         } 
         catch (ClassNotFoundException | SQLException e) {
-            System.out.println("JAVA DB CONNECTION");
+            System.out.println("ERROR - JAVA DB CONNECTION ");
             JOptionPane.showMessageDialog(null, e); 
             return null;
         }

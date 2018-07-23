@@ -3,7 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package form;
 
 import java.awt.event.KeyEvent;
@@ -13,7 +12,7 @@ import java.awt.event.KeyListener;
  *
  * @author Milos Dragovic
  */
-public class LoginEvent implements KeyListener{
+public class LoginEvent implements KeyListener {
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -21,12 +20,11 @@ public class LoginEvent implements KeyListener{
     }
 
     @Override
-    public void keyPressed(KeyEvent e) { 
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                     
-                     
-                }
-            }     
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+
+        }
+    }
 
     @Override
     public void keyReleased(KeyEvent e) {

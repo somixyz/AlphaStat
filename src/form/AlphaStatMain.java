@@ -24,39 +24,53 @@ import java.awt.event.KeyListener;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.activation.FileDataSource;
 import javax.imageio.ImageIO;
+import javax.mail.Session;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
 import snap.Snap;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 /**
  *
- * @author acer e1
+ * @author Milos Dragovic
  */
 public class AlphaStatMain extends javax.swing.JFrame {
 
     private Connection connection = null;
     private PreparedStatement pst = null;
     private ResultSet rs = null;
-
+    private byte[] personImg = null;
+    private  String filePath = null;
     public AlphaStatMain() {
         initComponents();
         init();
         connection = JavaDBConnect.dbConnect();
         updateStudentInfoTable();
         updateStudentShowInfo();
-        setListeners(); 
+        setListeners();
     }
 
     /**
@@ -80,6 +94,22 @@ public class AlphaStatMain extends javax.swing.JFrame {
         panelStatistics = new javax.swing.JPanel();
         panelDocument = new javax.swing.JPanel();
         panelEmail = new javax.swing.JPanel();
+        mainPanel = new javax.swing.JPanel();
+        lblFrom = new javax.swing.JLabel();
+        txtFrom = new javax.swing.JTextField();
+        lblPassword = new javax.swing.JLabel();
+        lblTo = new javax.swing.JLabel();
+        txtTo = new javax.swing.JTextField();
+        lblSubject = new javax.swing.JLabel();
+        txtSubject = new javax.swing.JTextField();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        txtAreaMessage = new javax.swing.JTextArea();
+        txtAttachFile = new javax.swing.JTextField();
+        txtAttachName = new javax.swing.JTextField();
+        btnAttach = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        btnSendMail = new javax.swing.JButton();
+        txtPassword = new javax.swing.JPasswordField();
         jPanelWelcome = new javax.swing.JPanel();
         lblWelcome = new javax.swing.JLabel();
         btnSearch = new javax.swing.JButton();
@@ -114,8 +144,8 @@ public class AlphaStatMain extends javax.swing.JFrame {
         panelPhoto = new javax.swing.JPanel();
         paneImgPlace = new javax.swing.JPanel();
         lblImage = new javax.swing.JLabel();
-        btnUpload = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
+        btnImageUpload = new javax.swing.JButton();
+        txtImageUpload = new javax.swing.JTextField();
         btnSaveImg = new javax.swing.JButton();
         menuBarMain = new javax.swing.JMenuBar();
         mnuIteamFile = new javax.swing.JMenu();
@@ -193,14 +223,14 @@ public class AlphaStatMain extends javax.swing.JFrame {
             .addGroup(panelDataTableLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 785, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(475, Short.MAX_VALUE))
+                .addContainerGap(484, Short.MAX_VALUE))
         );
         panelDataTableLayout.setVerticalGroup(
             panelDataTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelDataTableLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(157, Short.MAX_VALUE))
+                .addContainerGap(173, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(" Data table ", panelDataTable);
@@ -209,11 +239,11 @@ public class AlphaStatMain extends javax.swing.JFrame {
         panelChart.setLayout(panelChartLayout);
         panelChartLayout.setHorizontalGroup(
             panelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1270, Short.MAX_VALUE)
+            .addGap(0, 1275, Short.MAX_VALUE)
         );
         panelChartLayout.setVerticalGroup(
             panelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
+            .addGap(0, 299, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(" Chart ", panelChart);
@@ -222,11 +252,11 @@ public class AlphaStatMain extends javax.swing.JFrame {
         panelStatistics.setLayout(panelStatisticsLayout);
         panelStatisticsLayout.setHorizontalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1270, Short.MAX_VALUE)
+            .addGap(0, 1275, Short.MAX_VALUE)
         );
         panelStatisticsLayout.setVerticalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
+            .addGap(0, 299, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(" Statistics ", panelStatistics);
@@ -235,26 +265,80 @@ public class AlphaStatMain extends javax.swing.JFrame {
         panelDocument.setLayout(panelDocumentLayout);
         panelDocumentLayout.setHorizontalGroup(
             panelDocumentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1270, Short.MAX_VALUE)
+            .addGap(0, 1275, Short.MAX_VALUE)
         );
         panelDocumentLayout.setVerticalGroup(
             panelDocumentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
+            .addGap(0, 299, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(" Document", panelDocument);
 
+        panelEmail.setBackground(new java.awt.Color(204, 255, 204));
         panelEmail.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+
+        mainPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lblFrom.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblFrom.setForeground(new java.awt.Color(255, 0, 0));
+        lblFrom.setText(" From ");
+        mainPanel.add(lblFrom, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 20, -1, -1));
+        mainPanel.add(txtFrom, new org.netbeans.lib.awtextra.AbsoluteConstraints(106, 14, 250, -1));
+
+        lblPassword.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblPassword.setForeground(new java.awt.Color(255, 0, 0));
+        lblPassword.setText(" Password");
+        mainPanel.add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 55, -1, -1));
+
+        lblTo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblTo.setForeground(new java.awt.Color(0, 51, 0));
+        lblTo.setText("TO");
+        mainPanel.add(lblTo, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 90, 23, -1));
+        mainPanel.add(txtTo, new org.netbeans.lib.awtextra.AbsoluteConstraints(106, 84, 250, -1));
+
+        lblSubject.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        lblSubject.setForeground(new java.awt.Color(0, 51, 0));
+        lblSubject.setText(" Subject ");
+        mainPanel.add(lblSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 132, 57, -1));
+        mainPanel.add(txtSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(106, 126, 250, -1));
+
+        txtAreaMessage.setColumns(20);
+        txtAreaMessage.setRows(5);
+        jScrollPane3.setViewportView(txtAreaMessage);
+
+        mainPanel.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(409, 12, 455, 138));
+        mainPanel.add(txtAttachFile, new org.netbeans.lib.awtextra.AbsoluteConstraints(409, 171, 280, -1));
+        mainPanel.add(txtAttachName, new org.netbeans.lib.awtextra.AbsoluteConstraints(409, 207, 280, -1));
+
+        btnAttach.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/attach.png"))); // NOI18N
+        btnAttach.setText(" Attach");
+        mainPanel.add(btnAttach, new org.netbeans.lib.awtextra.AbsoluteConstraints(736, 168, 128, 30));
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(0, 0, 204));
+        jLabel1.setText(" Attachment Name ");
+        mainPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(742, 217, 122, -1));
+
+        btnSendMail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/sendMail.png"))); // NOI18N
+        btnSendMail.setText(" Send Mail ");
+        mainPanel.add(btnSendMail, new org.netbeans.lib.awtextra.AbsoluteConstraints(409, 237, 455, -1));
+        mainPanel.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(106, 50, 250, -1));
 
         javax.swing.GroupLayout panelEmailLayout = new javax.swing.GroupLayout(panelEmail);
         panelEmail.setLayout(panelEmailLayout);
         panelEmailLayout.setHorizontalGroup(
             panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1270, Short.MAX_VALUE)
+            .addGroup(panelEmailLayout.createSequentialGroup()
+                .addGap(199, 199, 199)
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 881, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(195, Short.MAX_VALUE))
         );
         panelEmailLayout.setVerticalGroup(
             panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 288, Short.MAX_VALUE)
+            .addGroup(panelEmailLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab(" Email", panelEmail);
@@ -528,9 +612,9 @@ public class AlphaStatMain extends javax.swing.JFrame {
         paneImgPlaceLayout.setHorizontalGroup(
             paneImgPlaceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, paneImgPlaceLayout.createSequentialGroup()
-                .addContainerGap(51, Short.MAX_VALUE)
-                .addComponent(lblImage, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28))
+                .addContainerGap(70, Short.MAX_VALUE)
+                .addComponent(lblImage, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53))
         );
         paneImgPlaceLayout.setVerticalGroup(
             paneImgPlaceLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -540,10 +624,10 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 .addContainerGap())
         );
 
-        btnUpload.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/upload.png"))); // NOI18N
-        btnUpload.setText("Upload");
+        btnImageUpload.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/upload.png"))); // NOI18N
+        btnImageUpload.setText("Upload");
 
-        jTextField1.setText(" ");
+        txtImageUpload.setText(" ");
 
         btnSaveImg.setText(" Save ");
 
@@ -558,9 +642,9 @@ public class AlphaStatMain extends javax.swing.JFrame {
                         .addGap(10, 10, 10)
                         .addComponent(btnSaveImg, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(panelPhotoLayout.createSequentialGroup()
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(txtImageUpload, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(btnUpload, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnImageUpload, javax.swing.GroupLayout.PREFERRED_SIZE, 104, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelPhotoLayout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -572,8 +656,8 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 .addComponent(paneImgPlace, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(panelPhotoLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnUpload)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnImageUpload)
+                    .addComponent(txtImageUpload, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnSaveImg)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -773,7 +857,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
 
     private void mItemWebHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mItemWebHelpActionPerformed
         try {
-            Desktop.getDesktop().browse(URI.create("https://www.google.com"));
+            Desktop.getDesktop().browse(URI.create("https://github.com/somixyz/AlphaStat/blob/master/README.md"));
         } catch (IOException ex) {
             JOptionPane.showMessageDialog(null, ex);
             Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
@@ -818,31 +902,38 @@ public class AlphaStatMain extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnAttach;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDelete;
     private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnImageUpload;
     private javax.swing.JButton btnOffHelp;
     private javax.swing.JButton btnSaveImg;
     private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSendMail;
     private javax.swing.JButton btnSingOut;
-    private javax.swing.JButton btnUpload;
     private javax.swing.JComboBox<String> comboGender;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JPanel jPanelCommands;
     private javax.swing.JPanel jPanelWelcome;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblAge;
     private javax.swing.JLabel lblBlood;
     private javax.swing.JLabel lblDepartment;
     private javax.swing.JLabel lblFirstName;
+    private javax.swing.JLabel lblFrom;
     private javax.swing.JLabel lblGender;
     private javax.swing.JLabel lblHeight;
     private javax.swing.JLabel lblImage;
     private javax.swing.JLabel lblLastName;
+    private javax.swing.JLabel lblPassword;
     private javax.swing.JLabel lblStudentId;
+    private javax.swing.JLabel lblSubject;
+    private javax.swing.JLabel lblTo;
     private javax.swing.JLabel lblWeight;
     private javax.swing.JLabel lblWelcome;
     private javax.swing.JMenuItem mIteamClose;
@@ -850,6 +941,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JMenuItem mIteamOffHelp;
     private javax.swing.JMenuItem mIteamSnap;
     private javax.swing.JMenuItem mItemWebHelp;
+    private javax.swing.JPanel mainPanel;
     private javax.swing.JMenuBar menuBarMain;
     private javax.swing.JMenu mnuIteamAbout;
     private javax.swing.JMenu mnuIteamDate;
@@ -870,26 +962,34 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JTable tblStudentInfo;
     private javax.swing.JTable tblStudentShowInfo;
     private javax.swing.JTextField txtAge;
+    private javax.swing.JTextArea txtAreaMessage;
+    private javax.swing.JTextField txtAttachFile;
+    private javax.swing.JTextField txtAttachName;
     private javax.swing.JTextField txtBlood;
     private javax.swing.JTextField txtDepartment;
     private javax.swing.JTextField txtFirstName;
+    private javax.swing.JTextField txtFrom;
     private javax.swing.JTextField txtHeight;
+    private javax.swing.JTextField txtImageUpload;
     private javax.swing.JTextField txtLastName;
+    private javax.swing.JPasswordField txtPassword;
     private javax.swing.JTextField txtSearch;
     private javax.swing.JTextField txtStudentId;
+    private javax.swing.JTextField txtSubject;
+    private javax.swing.JTextField txtTo;
     private javax.swing.JTextField txtWeight;
     // End of variables declaration//GEN-END:variables
 private void init() {
         setLocationRelativeTo(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
-        
+
         //settings title date and time
         mnuIteamDate.setText(CurrentDateAndTime.getCurrentDate());
         mnuIteamDate.setForeground(Color.blue);
         mnuIteamTime.setText(CurrentDateAndTime.getLoggedTime());
         mnuIteamTime.setForeground(Color.red);
-        
+
     }
 
     public void close() {
@@ -934,174 +1034,290 @@ private void init() {
             txtWeight.setText(rs.getString("Weight"));
             txtBlood.setText(rs.getString("Blood"));
             comboGender.setSelectedItem(rs.getString("Gender"));
-            
+
             // byte format of image
             byte[] imageData = rs.getBytes("Photo");
-            ImageIcon format = new ImageIcon(scaledImage(imageData, lblImage.getWidth(),lblImage.getHeight()));
+            ImageIcon format = new ImageIcon(scaledImage(imageData, lblImage.getWidth(), lblImage.getHeight()));
             lblImage.setIcon(format);
         } catch (SQLException ex) {
             Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, ex);
         }
     }
-    private Image scaledImage(byte[] img, int w, int h ){
+
+    private Image scaledImage(byte[] img, int w, int h) {
         BufferedImage resizedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
         try {
             Graphics2D g2 = resizedImage.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
-            
+
             //convert byte arrat back to buffered image
             ByteArrayInputStream in = new ByteArrayInputStream(img);
             BufferedImage bImageFromConvert = ImageIO.read(in);
-            
-            g2.drawImage(bImageFromConvert, 0, 0,w,h,null);
+
+            g2.drawImage(bImageFromConvert, 0, 0, w, h, null);
             g2.dispose();
         } catch (Exception ex) {
-           JOptionPane.showMessageDialog(panelCont,ex);
-    }  return  resizedImage;
+            JOptionPane.showMessageDialog(panelCont, ex);
+        }
+        return resizedImage;
     }
-    private void setClearValue(){
-            txtStudentId.setText(null);
-            txtFirstName.setText(null);
-            txtLastName.setText(null);
-            txtDepartment.setText(null);
-            txtAge.setText(null);
-            txtHeight.setText(null);
-            txtWeight.setText(null);
-            txtBlood.setText(null);
-            comboGender.setSelectedItem("Male");
-            } 
-    private void setListeners(){
-//        KeyListener seartchEvent = new SearchEvent(txtSearch);
+
+    protected void setClearValue() {
+        txtStudentId.setText(null);
+        txtFirstName.setText(null);
+        txtLastName.setText(null);
+        txtDepartment.setText(null);
+        txtAge.setText(null);
+        txtHeight.setText(null);
+        txtWeight.setText(null);
+        txtBlood.setText(null);
+        comboGender.setSelectedItem("Male");
+    }
+
+    private void setListeners() {
+//        SearchEvent seartchEvent = new SearchEvent(txtSearch);
 //        txtSearch.addKeyListener(seartchEvent);
 //        txtSearch.addFocusListener(seartchEvent);
 
-
-    txtSearch.addFocusListener(new FocusListener() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            txtSearch.setText("");
-        } 
-        @Override
-        public void focusLost(FocusEvent e) {
-            txtSearch.setText("Search");
-        }
-    });
-    txtSearch.addKeyListener(new KeyListener() {
-        @Override
-        public void keyTyped(KeyEvent e) {
-        }
-
-        @Override
-        public void keyPressed(KeyEvent e) {
-        }
-
-        @Override
-        public void keyReleased(KeyEvent e) {
-            String sql = "select * from Student_info where Student_id=?";
-            try {
-                pst = connection.prepareStatement(sql);
-                pst.setString(1, txtSearch.getText());
-                rs = pst.executeQuery();
-                if(rs.next()){
-                    getValue();
-                }else{setClearValue();}
-            } catch (Exception ex) {
+        txtSearch.addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                txtSearch.setText("");
             }
-        }
-    });
-    btnAdd.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String sql = "insert into Student_info (Student_id,First_name,Last_name,Department,Age,Height,Weight,Gender,Blood)"
-                    + "values(?,?,?,?,?,?,?,?,?)";
-            try {
-                pst=connection.prepareStatement(sql);
-                pst.setString(1, txtStudentId.getText());
-                pst.setString(2, txtFirstName.getText());
-                pst.setString(3, txtLastName.getText());
-                pst.setString(4, txtDepartment.getText());
-                pst.setString(5, txtAge.getText());
-                pst.setString(6, txtHeight.getText());
-                pst.setString(7, txtWeight.getText());
-                pst.setString(8, comboGender.getSelectedItem().toString());
-                pst.setString(9, txtBlood.getText()); 
-                pst.execute();
-                JOptionPane.showMessageDialog(null, "Saved");
-            } catch (Exception ex) {
-                 JOptionPane.showMessageDialog(null, "Error, some data are not entered");
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                txtSearch.setText("Search");
             }
-            updateStudentInfoTable();
-            updateStudentShowInfo();
-        }
-    });
-    btnEdit.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            String sql = "update Student_info set First_name=?,Last_name=?,Department=?,Age=?,Height=?,Weight=?,Gender=?,Blood=?"
-                    + " where Student_id=?";
-            try {
-                pst=connection.prepareStatement(sql);
-                pst.setString(1, txtFirstName.getText());
-                pst.setString(2, txtLastName.getText());
-                pst.setString(3, txtDepartment.getText());
-                pst.setString(4, txtAge.getText());
-                pst.setString(5, txtHeight.getText());
-                pst.setString(6, txtWeight.getText());
-                pst.setString(7, comboGender.getSelectedItem().toString());
-                pst.setString(8, txtBlood.getText());  
-                pst.setString(9, txtStudentId.getText()); 
-                pst.execute();
-                JOptionPane.showMessageDialog(null, "Updated");
-            } catch (Exception ex) {
-                 JOptionPane.showMessageDialog(null, "Error, some data are not entered");
-                 
+        });
+        txtSearch.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
             }
-            updateStudentInfoTable();
-            updateStudentShowInfo();
-        }
-    });
-    btnClear.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-           setClearValue();
-        }
-    });
-    btnDelete.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            int p = JOptionPane.showConfirmDialog(panelCont, "Do you want to delete ?", "Delete" ,JOptionPane.YES_NO_OPTION);
-            if(p==0){
-                String sql="delete from Student_info where Student_id=?";
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+                String sql = "select * from Student_info where Student_id=?";
                 try {
-                    pst=connection.prepareStatement(sql);
+                    pst = connection.prepareStatement(sql);
+                    pst.setString(1, txtSearch.getText());
+                    rs = pst.executeQuery();
+                    if (rs.next()) {
+                        getValue();
+                    } else {
+                        setClearValue();
+                    }
+                } catch (Exception ex) {
+                }
+            }
+        });
+        
+        btnAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String sql = "insert into Student_info (Student_id,First_name,Last_name,Department,Age,Height,Weight,Gender,Blood)"
+                        + "values(?,?,?,?,?,?,?,?,?)";
+                try {
+                    pst = connection.prepareStatement(sql);
                     pst.setString(1, txtStudentId.getText());
+                    pst.setString(2, txtFirstName.getText());
+                    pst.setString(3, txtLastName.getText());
+                    pst.setString(4, txtDepartment.getText());
+                    pst.setString(5, txtAge.getText());
+                    pst.setString(6, txtHeight.getText());
+                    pst.setString(7, txtWeight.getText());
+                    pst.setString(8, comboGender.getSelectedItem().toString());
+                    pst.setString(9, txtBlood.getText());
                     pst.execute();
-                    JOptionPane.showMessageDialog(rootPane, "Deleted");
-                } catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(null, "Saved");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error, some data are not entered");
+                }
+                updateStudentInfoTable();
+                updateStudentShowInfo();
+            }
+        });
+        btnEdit.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String sql = "update Student_info set First_name=?,Last_name=?,Department=?,Age=?,Height=?,Weight=?,Gender=?,Blood=?"
+                        + " where Student_id=?";
+                try {
+                    pst = connection.prepareStatement(sql);
+                    pst.setString(1, txtFirstName.getText());
+                    pst.setString(2, txtLastName.getText());
+                    pst.setString(3, txtDepartment.getText());
+                    pst.setString(4, txtAge.getText());
+                    pst.setString(5, txtHeight.getText());
+                    pst.setString(6, txtWeight.getText());
+                    pst.setString(7, comboGender.getSelectedItem().toString());
+                    pst.setString(8, txtBlood.getText());
+                    pst.setString(9, txtStudentId.getText());
+                    pst.execute();
+                    JOptionPane.showMessageDialog(null, "Updated");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error, some data are not entered");
+
+                }
+                updateStudentInfoTable();
+                updateStudentShowInfo();
+            }
+        });
+        btnClear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setClearValue();
+            }
+        });
+        btnDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int p = JOptionPane.showConfirmDialog(panelCont, "Do you want to delete ?", "Delete", JOptionPane.YES_NO_OPTION);
+                if (p == 0) {
+                    String sql = "delete from Student_info where Student_id=?";
+                    try {
+                        pst = connection.prepareStatement(sql);
+                        pst.setString(1, txtStudentId.getText());
+                        pst.execute();
+                        JOptionPane.showMessageDialog(rootPane, "Deleted");
+                    } catch (SQLException ex) {
+                        Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
+                        JOptionPane.showMessageDialog(rootPane, ex);
+                    }
+                    updateStudentInfoTable();
+                    updateStudentShowInfo();
+                }
+            }
+        });
+        mIteamSnap.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    Snap.saveScreenShot(panelStudentInfo, "Student-info img.png");
+                    JOptionPane.showMessageDialog(rootPane, "Image is captured");
+                } catch (Exception ex) {
                     Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
                     JOptionPane.showMessageDialog(rootPane, ex);
                 }
-            updateStudentInfoTable();
-            updateStudentShowInfo();
-            }  } 
-    }); 
-    mIteamSnap.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                Snap.saveScreenShot(panelStudentInfo, "Student-info img.png");
-                JOptionPane.showMessageDialog(rootPane, "Image is captured");
-            } catch (Exception ex) {
-                Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
-                JOptionPane.showMessageDialog(rootPane, ex);
+
             }
-            
-        }
-    });
-   
+        });
+
+        btnImageUpload.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {                
+           JFileChooser chooser = new JFileChooser();
+            chooser.showOpenDialog(null);
+
+            File fileChoosen = chooser.getSelectedFile();
+            String fileName = fileChoosen.getAbsolutePath();
+            txtImageUpload.setText(fileName); 
+            try {
+                FileInputStream fIS = new FileInputStream(fileChoosen);
+                ByteArrayOutputStream bAOS = new ByteArrayOutputStream();
+                byte[] buf = new byte[1024];
+                for (int readNum; (readNum = fIS.read(buf)) != -1;) {
+                    bAOS.write(buf, 0, readNum);
+                }
+                personImg = bAOS.toByteArray();
+            } catch (Exception ex) {
+            }
+        }});
+        btnSaveImg.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               String sql = "update Student_info set Photo=? where Student_id=?";
+            try { 
+                pst = connection.prepareStatement(sql);
+                pst.setBytes(1, personImg);
+                pst.setString(2, txtStudentId.getText());
+                JOptionPane.showMessageDialog(panelCont, "Image saved");
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(panelCont, ex);
+            }
+            }
+        });
+    
+        btnSendMail.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {    
+                final String from = txtFrom.getText();
+                final String password = txtPassword.getText();
+                
+                String to = txtTo.getText();
+                String subject = txtSubject.getText();
+                String txtMessage = txtAreaMessage.getText();
+                
+                Properties pros = new Properties();
+                pros.put("mail.smtp.host", "smtp.gmail.com");
+                pros.put("mail.smtp.socketFactory.port", "465"); //SSL protocol, port no is 465
+                pros.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                pros.put("mail.smtp.auth", "true");
+                pros.put("mail.smtp.port", "465");
+                
+                Session session = Session.getDefaultInstance(pros,
+                        new javax.mail.Authenticator() {
+                            @Override
+                            protected PasswordAuthentication getPasswordAuthentication(){
+                                return new PasswordAuthentication(from, password);
+                            }
+                        }); 
+                try{
+                        //message header  
+                        //information about sender, reciver and subject
+                    Message message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress(from));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+                    message.setSubject(subject);
+
+                        //set the text message 
+                        // contain of text message
+                    MimeBodyPart messageBodyPart = new MimeBodyPart();
+                    messageBodyPart.setText(txtMessage);
+                    Multipart multiPart = new MimeMultipart();
+                    multiPart.addBodyPart(messageBodyPart); 
+
+                    //attach file
+                    if( filePath!=null && !filePath.isEmpty() ){
+                        messageBodyPart = new MimeBodyPart();  
+                        DataSource source = new FileDataSource(filePath);  
+                        messageBodyPart.setDataHandler(new DataHandler(source));
+                        messageBodyPart.setFileName(txtAttachName.getText());
+                        multiPart.addBodyPart(messageBodyPart);
+                    }
+                        //sending...
+                    message.setContent(multiPart);
+                    Transport.send(message);
+                    
+                    JOptionPane.showMessageDialog(rootPane, "Message sent");
+                   
+                }catch(Exception ex){
+//                  JOptionPane.showMessageDialog(rootPane, ex);
+                    JOptionPane.showMessageDialog(rootPane, "Sending message failed", "Message dialog", JOptionPane.ERROR_MESSAGE);
+
+                }
+            }
+        });
+        
+        
+        btnAttach.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                JFileChooser chooser = new JFileChooser();
+                chooser.showOpenDialog(rootPane);
+                
+                File f = chooser.getSelectedFile();
+                filePath = f.getAbsolutePath();
+                txtAttachFile.setText(filePath);
+                txtAttachName.setText(f.getName());
+            }
+        });
+        
     }
-    
-    
-    
+
 }

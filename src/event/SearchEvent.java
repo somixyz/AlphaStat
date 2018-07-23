@@ -26,6 +26,7 @@ public class SearchEvent extends AlphaStatMain implements FocusListener,KeyListe
     private PreparedStatement pst = null;
     private ResultSet rs = null;
     private JTextField txtSearch ;
+    
     public SearchEvent(JTextField txtSearch){
         this.txtSearch = txtSearch;
         connection = JavaDBConnect.dbConnect();
@@ -56,6 +57,9 @@ public class SearchEvent extends AlphaStatMain implements FocusListener,KeyListe
                 rs = pst.executeQuery();
                 if(rs.next()){
                     getValue();
+                }
+                else{
+                setClearValue();
                 }
             } catch (Exception ex) {
             }
