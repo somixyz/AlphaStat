@@ -20,6 +20,8 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
@@ -64,13 +66,16 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private ResultSet rs = null;
     private byte[] personImg = null;
     private  String filePath = null;
+    
     public AlphaStatMain() {
         initComponents();
         init();
         connection = JavaDBConnect.dbConnect();
         updateStudentInfoTable();
         updateStudentShowInfo();
+        updateDoc();
         setListeners();
+//        setSearchListener();
     }
 
     /**
@@ -92,7 +97,6 @@ public class AlphaStatMain extends javax.swing.JFrame {
         tblStudentInfo = new javax.swing.JTable();
         panelChart = new javax.swing.JPanel();
         panelStatistics = new javax.swing.JPanel();
-        panelDocument = new javax.swing.JPanel();
         panelEmail = new javax.swing.JPanel();
         mainPanel = new javax.swing.JPanel();
         lblFrom = new javax.swing.JLabel();
@@ -110,6 +114,21 @@ public class AlphaStatMain extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         btnSendMail = new javax.swing.JButton();
         txtPassword = new javax.swing.JPasswordField();
+        panelDocument = new javax.swing.JPanel();
+        documentPanel = new javax.swing.JPanel();
+        jScrollPane4 = new javax.swing.JScrollPane();
+        tblDoc = new javax.swing.JTable();
+        txtDocAttach = new javax.swing.JTextField();
+        btnDocAttach = new javax.swing.JButton();
+        txtDocID = new javax.swing.JTextField();
+        txtDocName = new javax.swing.JTextField();
+        txtDocSId = new javax.swing.JTextField();
+        btnDocDelete = new javax.swing.JButton();
+        btnDocAdd = new javax.swing.JButton();
+        btnDocClear = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
         jPanelWelcome = new javax.swing.JPanel();
         lblWelcome = new javax.swing.JLabel();
         btnSearch = new javax.swing.JButton();
@@ -157,6 +176,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         mIteamOffHelp = new javax.swing.JMenuItem();
         mItemWebHelp = new javax.swing.JMenuItem();
         mnuIteamAbout = new javax.swing.JMenu();
+        mIteamAboutMe = new javax.swing.JMenuItem();
         mnuIteamDate = new javax.swing.JMenu();
         mnuIteamTime = new javax.swing.JMenu();
 
@@ -230,7 +250,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
             .addGroup(panelDataTableLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(173, Short.MAX_VALUE))
+                .addContainerGap(112, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(" Data table ", panelDataTable);
@@ -243,7 +263,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         );
         panelChartLayout.setVerticalGroup(
             panelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 299, Short.MAX_VALUE)
+            .addGap(0, 238, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(" Chart ", panelChart);
@@ -256,23 +276,10 @@ public class AlphaStatMain extends javax.swing.JFrame {
         );
         panelStatisticsLayout.setVerticalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 299, Short.MAX_VALUE)
+            .addGap(0, 238, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(" Statistics ", panelStatistics);
-
-        javax.swing.GroupLayout panelDocumentLayout = new javax.swing.GroupLayout(panelDocument);
-        panelDocument.setLayout(panelDocumentLayout);
-        panelDocumentLayout.setHorizontalGroup(
-            panelDocumentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1275, Short.MAX_VALUE)
-        );
-        panelDocumentLayout.setVerticalGroup(
-            panelDocumentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 299, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab(" Document", panelDocument);
 
         panelEmail.setBackground(new java.awt.Color(204, 255, 204));
         panelEmail.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
@@ -343,6 +350,80 @@ public class AlphaStatMain extends javax.swing.JFrame {
 
         jTabbedPane1.addTab(" Email", panelEmail);
 
+        documentPanel.setBackground(new java.awt.Color(125, 248, 154));
+        documentPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        tblDoc.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        tblDoc.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Title 1", "Title 2", "Title 3", "Title 4"
+            }
+        ));
+        tblDoc.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        jScrollPane4.setViewportView(tblDoc);
+
+        documentPanel.add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 20, 493, 188));
+        documentPanel.add(txtDocAttach, new org.netbeans.lib.awtextra.AbsoluteConstraints(61, 40, 300, 30));
+
+        btnDocAttach.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/attach.png"))); // NOI18N
+        btnDocAttach.setText(" Attach ");
+        documentPanel.add(btnDocAttach, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 40, 107, 32));
+        documentPanel.add(txtDocID, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 80, 159, 30));
+        documentPanel.add(txtDocName, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 160, 159, 30));
+        documentPanel.add(txtDocSId, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 120, 159, 30));
+
+        btnDocDelete.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/delete.png"))); // NOI18N
+        btnDocDelete.setText(" Delete ");
+        documentPanel.add(btnDocDelete, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 120, 107, -1));
+
+        btnDocAdd.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/add.png"))); // NOI18N
+        btnDocAdd.setText(" Add ");
+        documentPanel.add(btnDocAdd, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 80, 107, -1));
+
+        btnDocClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/clear.png"))); // NOI18N
+        btnDocClear.setText(" Clear ");
+        documentPanel.add(btnDocClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(390, 160, 107, -1));
+
+        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel2.setForeground(new java.awt.Color(0, 0, 102));
+        jLabel2.setText(" Doc id");
+        documentPanel.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 80, 50, 30));
+
+        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel3.setForeground(new java.awt.Color(0, 0, 102));
+        jLabel3.setText("Student id");
+        documentPanel.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 120, 82, 30));
+
+        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        jLabel4.setForeground(new java.awt.Color(0, 0, 102));
+        jLabel4.setText(" Document name");
+        documentPanel.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 160, -1, 30));
+
+        javax.swing.GroupLayout panelDocumentLayout = new javax.swing.GroupLayout(panelDocument);
+        panelDocument.setLayout(panelDocumentLayout);
+        panelDocumentLayout.setHorizontalGroup(
+            panelDocumentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDocumentLayout.createSequentialGroup()
+                .addGap(81, 81, 81)
+                .addComponent(documentPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 1112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(82, Short.MAX_VALUE))
+        );
+        panelDocumentLayout.setVerticalGroup(
+            panelDocumentLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelDocumentLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(documentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
+        jTabbedPane1.addTab(" Document", panelDocument);
+
         javax.swing.GroupLayout panelContLayout = new javax.swing.GroupLayout(panelCont);
         panelCont.setLayout(panelContLayout);
         panelContLayout.setHorizontalGroup(
@@ -351,7 +432,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         );
         panelContLayout.setVerticalGroup(
             panelContLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING)
+            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 263, Short.MAX_VALUE)
         );
 
         jPanelWelcome.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -394,7 +475,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         jPanelCommandsLayout.setVerticalGroup(
             jPanelCommandsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCommandsLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(21, Short.MAX_VALUE)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEdit)
@@ -726,6 +807,17 @@ public class AlphaStatMain extends javax.swing.JFrame {
         menuBarMain.add(mnuIteamHelp);
 
         mnuIteamAbout.setText(" About ");
+
+        mIteamAboutMe.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        mIteamAboutMe.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/about.png"))); // NOI18N
+        mIteamAboutMe.setText(" About me");
+        mIteamAboutMe.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                mIteamAboutMeActionPerformed(evt);
+            }
+        });
+        mnuIteamAbout.add(mIteamAboutMe);
+
         menuBarMain.add(mnuIteamAbout);
 
         mnuIteamDate.setText(" Date ");
@@ -864,6 +956,16 @@ public class AlphaStatMain extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mItemWebHelpActionPerformed
 
+    private void mIteamAboutMeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mIteamAboutMeActionPerformed
+        try {
+            AboutFrm aboutForm = new AboutFrm();
+            aboutForm.setVisible(true);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(rootPane, e);
+
+        }
+    }//GEN-LAST:event_mIteamAboutMeActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -905,6 +1007,10 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JButton btnAttach;
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnDocAdd;
+    private javax.swing.JButton btnDocAttach;
+    private javax.swing.JButton btnDocClear;
+    private javax.swing.JButton btnDocDelete;
     private javax.swing.JButton btnEdit;
     private javax.swing.JButton btnImageUpload;
     private javax.swing.JButton btnOffHelp;
@@ -913,12 +1019,17 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JButton btnSendMail;
     private javax.swing.JButton btnSingOut;
     private javax.swing.JComboBox<String> comboGender;
+    private javax.swing.JPanel documentPanel;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     private javax.swing.JPanel jPanelCommands;
     private javax.swing.JPanel jPanelWelcome;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
     private javax.swing.JTabbedPane jTabbedPane1;
     private javax.swing.JToolBar jToolBar1;
     private javax.swing.JLabel lblAge;
@@ -936,6 +1047,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JLabel lblTo;
     private javax.swing.JLabel lblWeight;
     private javax.swing.JLabel lblWelcome;
+    private javax.swing.JMenuItem mIteamAboutMe;
     private javax.swing.JMenuItem mIteamClose;
     private javax.swing.JMenuItem mIteamExit;
     private javax.swing.JMenuItem mIteamOffHelp;
@@ -959,6 +1071,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JPanel panelStatistics;
     private javax.swing.JPanel panelStudentInfo;
     private javax.swing.JPanel panelTableStudentShowInfo;
+    private javax.swing.JTable tblDoc;
     private javax.swing.JTable tblStudentInfo;
     private javax.swing.JTable tblStudentShowInfo;
     private javax.swing.JTextField txtAge;
@@ -967,6 +1080,10 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JTextField txtAttachName;
     private javax.swing.JTextField txtBlood;
     private javax.swing.JTextField txtDepartment;
+    private javax.swing.JTextField txtDocAttach;
+    private javax.swing.JTextField txtDocID;
+    private javax.swing.JTextField txtDocName;
+    private javax.swing.JTextField txtDocSId;
     private javax.swing.JTextField txtFirstName;
     private javax.swing.JTextField txtFrom;
     private javax.swing.JTextField txtHeight;
@@ -1016,6 +1133,17 @@ private void init() {
             pst = connection.prepareStatement(sql);
             rs = pst.executeQuery();
             tblStudentShowInfo.setModel(DbUtils.resultSetToTableModel(rs));
+        } catch (SQLException ex) {
+            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(rootPane, ex);
+        } 
+    }
+    private void updateDoc() {
+        try {
+            String sql = "select * from Doc_table";
+            pst = connection.prepareStatement(sql);
+            rs = pst.executeQuery();
+            tblDoc.setModel(DbUtils.resultSetToTableModel(rs));
         } catch (SQLException ex) {
             Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, ex);
@@ -1075,10 +1203,13 @@ private void init() {
         comboGender.setSelectedItem("Male");
     }
 
-    private void setListeners() {
+//    private void setSearchListener(){
 //        SearchEvent seartchEvent = new SearchEvent(txtSearch);
 //        txtSearch.addKeyListener(seartchEvent);
 //        txtSearch.addFocusListener(seartchEvent);
+//    }
+    private void setListeners() {
+       
 
         txtSearch.addFocusListener(new FocusListener() {
             @Override
@@ -1317,7 +1448,94 @@ private void init() {
                 txtAttachName.setText(f.getName());
             }
         });
+    
+        btnDocAttach.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) { 
+                JFileChooser chooser = new JFileChooser();
+                chooser.showOpenDialog(rootPane);
+                
+                File f = chooser.getSelectedFile();
+                String fileDocPath = f.getAbsolutePath();
+                txtDocAttach.setText(fileDocPath);
+            }
+        });
+        btnDocAdd.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                 String sql = "insert into Doc_table (Doc_id,Student_id,Doc_name,Path)"
+                        + "values(?,?,?,?)";
+                try {
+                    pst = connection.prepareStatement(sql);
+                    pst.setString(1, txtDocID.getText());
+                    pst.setString(2, txtDocSId.getText());
+                    pst.setString(3, txtDocName.getText());
+                    pst.setString(4, txtDocAttach.getText()); 
+                    pst.execute();
+                    JOptionPane.showMessageDialog(null, "Saved");
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error, some data are not entered");
+                }
+                updateDoc();
+            }
+        });
+            
+        tblDoc.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                try {
+                    int row = tblDoc.getSelectedRow();
+                    String tableClick = (tblDoc.getModel().getValueAt(row, 3).toString());
+                    String sql = "Select * from Doc_table where Doc_id = '" + tableClick + "'";
+                    pst = connection.prepareStatement(sql);
+                    rs = pst.executeQuery();
+                    if (rs.next()) {
+                        txtDocID.setText(rs.getString("Doc_id"));
+                        txtDocSId.setText(rs.getString("Student_id"));
+                        txtDocName.setText(rs.getString("Doc_name"));
+                        txtDocAttach.setText(rs.getString("Path"));
+                    
+                        try {
+                        Desktop.getDesktop().open(new File( (String) tblDoc.getValueAt(row, 3)));
+                        } catch (IOException ex) {
+                            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
+                        } 
+                    }
+                }catch (SQLException ex) {
+                    JOptionPane.showMessageDialog(rootPane, ex);
+                }
+            }
+        });
         
+        btnDocDelete.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int p = JOptionPane.showConfirmDialog(panelCont, "Do you want to delete ?", "Delete", JOptionPane.YES_NO_OPTION);
+                if (p == 0) {
+                    String sql = "delete from Doc_table where Doc_id=?";
+                    try {
+                        pst = connection.prepareStatement(sql);
+                        pst.setString(1, txtDocID.getText());
+                        pst.execute();
+                        JOptionPane.showMessageDialog(rootPane, "Deleted");
+                    } catch (SQLException ex) {
+                        JOptionPane.showMessageDialog(rootPane, ex);
+                    }
+                    updateDoc();
+                }
+            }
+        });
+    
+        btnDocClear.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                txtDocAttach.setText(null);
+                txtDocID.setText(null);
+                txtDocName.setText(null);
+                txtDocSId.setText(null);
+                
+            }
+        });
     }
 
 }

@@ -29,7 +29,7 @@ public class SearchEvent extends AlphaStatMain implements FocusListener,KeyListe
     
     public SearchEvent(JTextField txtSearch){
         this.txtSearch = txtSearch;
-        connection = JavaDBConnect.dbConnect();
+        connection = JavaDBConnect.dbConnect(); 
     } 
     @Override
     public void focusGained(FocusEvent e) {
@@ -62,6 +62,8 @@ public class SearchEvent extends AlphaStatMain implements FocusListener,KeyListe
                 setClearValue();
                 }
             } catch (Exception ex) {
+                System.out.println(ex.getMessage());
             }
     }
+    
 }
