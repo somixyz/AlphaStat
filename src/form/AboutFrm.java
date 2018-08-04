@@ -46,6 +46,7 @@ public class AboutFrm extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("About me");
         setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 255, 153));
@@ -289,7 +290,7 @@ public class AboutFrm extends javax.swing.JFrame {
     }
 
     private void init() {
-        setTitle("About");
+        setTitle("About me");
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);

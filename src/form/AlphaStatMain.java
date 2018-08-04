@@ -11,6 +11,7 @@ import event.SearchEvent;
 import java.awt.Color;
 import java.awt.Desktop;
 import java.awt.Graphics2D;
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
@@ -30,11 +31,14 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import static java.lang.Thread.sleep;
 import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -75,6 +79,8 @@ public class AlphaStatMain extends javax.swing.JFrame {
         updateStudentShowInfo();
         updateDoc();
         setListeners();
+        currentTime();
+        
 //        setSearchListener();
     }
 
@@ -179,6 +185,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         mIteamAboutMe = new javax.swing.JMenuItem();
         mnuIteamDate = new javax.swing.JMenu();
         mnuIteamTime = new javax.swing.JMenu();
+        mnuRealTime = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -250,7 +257,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
             .addGroup(panelDataTableLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addContainerGap(180, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab(" Data table ", panelDataTable);
@@ -263,7 +270,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         );
         panelChartLayout.setVerticalGroup(
             panelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 238, Short.MAX_VALUE)
+            .addGap(0, 306, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(" Chart ", panelChart);
@@ -276,7 +283,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         );
         panelStatisticsLayout.setVerticalGroup(
             panelStatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 238, Short.MAX_VALUE)
+            .addGap(0, 306, Short.MAX_VALUE)
         );
 
         jTabbedPane1.addTab(" Statistics ", panelStatistics);
@@ -284,61 +291,121 @@ public class AlphaStatMain extends javax.swing.JFrame {
         panelEmail.setBackground(new java.awt.Color(204, 255, 204));
         panelEmail.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
 
-        mainPanel.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
         lblFrom.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblFrom.setForeground(new java.awt.Color(255, 0, 0));
         lblFrom.setText(" From ");
-        mainPanel.add(lblFrom, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 20, -1, -1));
-        mainPanel.add(txtFrom, new org.netbeans.lib.awtextra.AbsoluteConstraints(106, 14, 250, -1));
 
         lblPassword.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblPassword.setForeground(new java.awt.Color(255, 0, 0));
         lblPassword.setText(" Password");
-        mainPanel.add(lblPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 55, -1, -1));
 
         lblTo.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblTo.setForeground(new java.awt.Color(0, 51, 0));
         lblTo.setText("TO");
-        mainPanel.add(lblTo, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 90, 23, -1));
-        mainPanel.add(txtTo, new org.netbeans.lib.awtextra.AbsoluteConstraints(106, 84, 250, -1));
 
         lblSubject.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         lblSubject.setForeground(new java.awt.Color(0, 51, 0));
         lblSubject.setText(" Subject ");
-        mainPanel.add(lblSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 132, 57, -1));
-        mainPanel.add(txtSubject, new org.netbeans.lib.awtextra.AbsoluteConstraints(106, 126, 250, -1));
 
         txtAreaMessage.setColumns(20);
         txtAreaMessage.setRows(5);
         jScrollPane3.setViewportView(txtAreaMessage);
 
-        mainPanel.add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(409, 12, 455, 138));
-        mainPanel.add(txtAttachFile, new org.netbeans.lib.awtextra.AbsoluteConstraints(409, 171, 280, -1));
-        mainPanel.add(txtAttachName, new org.netbeans.lib.awtextra.AbsoluteConstraints(409, 207, 280, -1));
-
         btnAttach.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/attach.png"))); // NOI18N
         btnAttach.setText(" Attach");
-        mainPanel.add(btnAttach, new org.netbeans.lib.awtextra.AbsoluteConstraints(736, 168, 128, 30));
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(0, 0, 204));
         jLabel1.setText(" Attachment Name ");
-        mainPanel.add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(742, 217, 122, -1));
 
         btnSendMail.setIcon(new javax.swing.ImageIcon(getClass().getResource("/image/sendMail.png"))); // NOI18N
         btnSendMail.setText(" Send Mail ");
-        mainPanel.add(btnSendMail, new org.netbeans.lib.awtextra.AbsoluteConstraints(409, 237, 455, -1));
-        mainPanel.add(txtPassword, new org.netbeans.lib.awtextra.AbsoluteConstraints(106, 50, 250, -1));
+
+        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
+        mainPanel.setLayout(mainPanelLayout);
+        mainPanelLayout.setHorizontalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblFrom)
+                            .addComponent(lblPassword)
+                            .addComponent(lblTo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lblSubject, javax.swing.GroupLayout.PREFERRED_SIZE, 57, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(6, 6, 6)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(txtFrom, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTo, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSubject, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(53, 53, 53)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(412, 412, 412)
+                        .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(btnSendMail, javax.swing.GroupLayout.PREFERRED_SIZE, 455, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(mainPanelLayout.createSequentialGroup()
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtAttachFile, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtAttachName, javax.swing.GroupLayout.PREFERRED_SIZE, 280, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(mainPanelLayout.createSequentialGroup()
+                                        .addGap(47, 47, 47)
+                                        .addComponent(btnAttach, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(mainPanelLayout.createSequentialGroup()
+                                        .addGap(53, 53, 53)
+                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)))))))
+                .addContainerGap(11, Short.MAX_VALUE))
+        );
+        mainPanelLayout.setVerticalGroup(
+            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(mainPanelLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(8, 8, 8)
+                        .addComponent(lblFrom)
+                        .addGap(21, 21, 21)
+                        .addComponent(lblPassword)
+                        .addGap(21, 21, 21)
+                        .addComponent(lblTo)
+                        .addGap(28, 28, 28)
+                        .addComponent(lblSubject))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addGap(2, 2, 2)
+                        .addComponent(txtFrom, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(12, 12, 12)
+                        .addComponent(txtPassword, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(txtTo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)
+                        .addComponent(txtSubject, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 138, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(btnAttach, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(19, 19, 19)
+                        .addComponent(jLabel1))
+                    .addGroup(mainPanelLayout.createSequentialGroup()
+                        .addComponent(txtAttachFile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(13, 13, 13)
+                        .addComponent(txtAttachName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnSendMail)
+                .addContainerGap(17, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout panelEmailLayout = new javax.swing.GroupLayout(panelEmail);
         panelEmail.setLayout(panelEmailLayout);
         panelEmailLayout.setHorizontalGroup(
             panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelEmailLayout.createSequentialGroup()
-                .addGap(199, 199, 199)
-                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 881, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(195, Short.MAX_VALUE))
+                .addGap(196, 196, 196)
+                .addComponent(mainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(201, Short.MAX_VALUE))
         );
         panelEmailLayout.setVerticalGroup(
             panelEmailLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -432,7 +499,9 @@ public class AlphaStatMain extends javax.swing.JFrame {
         );
         panelContLayout.setVerticalGroup(
             panelContLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jTabbedPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 263, Short.MAX_VALUE)
+            .addGroup(panelContLayout.createSequentialGroup()
+                .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
 
         jPanelWelcome.setBorder(javax.swing.BorderFactory.createEtchedBorder());
@@ -475,7 +544,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
         jPanelCommandsLayout.setVerticalGroup(
             jPanelCommandsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelCommandsLayout.createSequentialGroup()
-                .addContainerGap(21, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnAdd)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(btnEdit)
@@ -826,6 +895,9 @@ public class AlphaStatMain extends javax.swing.JFrame {
         mnuIteamTime.setText(" Time ");
         menuBarMain.add(mnuIteamTime);
 
+        mnuRealTime.setText(" Time2 ");
+        menuBarMain.add(mnuRealTime);
+
         setJMenuBar(menuBarMain);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -1061,6 +1133,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private javax.swing.JMenu mnuIteamFile;
     private javax.swing.JMenu mnuIteamHelp;
     private javax.swing.JMenu mnuIteamTime;
+    private javax.swing.JMenu mnuRealTime;
     private javax.swing.JPanel paneImgPlace;
     private javax.swing.JPanel panelChart;
     private javax.swing.JPanel panelCont;
@@ -1145,7 +1218,6 @@ private void init() {
             rs = pst.executeQuery();
             tblDoc.setModel(DbUtils.resultSetToTableModel(rs));
         } catch (SQLException ex) {
-            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, ex);
         }
 
@@ -1219,7 +1291,7 @@ private void init() {
 
             @Override
             public void focusLost(FocusEvent e) {
-                txtSearch.setText("Search");
+                txtSearch.setText("Search ( by id )");
             }
         });
         txtSearch.addKeyListener(new KeyListener() {
@@ -1233,6 +1305,7 @@ private void init() {
 
             @Override
             public void keyReleased(KeyEvent e) {
+            
                 String sql = "select * from Student_info where Student_id=?";
                 try {
                     pst = connection.prepareStatement(sql);
@@ -1244,6 +1317,7 @@ private void init() {
                         setClearValue();
                     }
                 } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(rootPane, ex);
                 }
             }
         });
@@ -1349,7 +1423,8 @@ private void init() {
             String fileName = fileChoosen.getAbsolutePath();
             txtImageUpload.setText(fileName); 
             try {
-                FileInputStream fIS = new FileInputStream(fileChoosen);
+                File fImg = new File(fileName);
+                FileInputStream fIS = new FileInputStream(fImg);
                 ByteArrayOutputStream bAOS = new ByteArrayOutputStream();
                 byte[] buf = new byte[1024];
                 for (int readNum; (readNum = fIS.read(buf)) != -1;) {
@@ -1357,16 +1432,19 @@ private void init() {
                 }
                 personImg = bAOS.toByteArray();
             } catch (Exception ex) {
+                JOptionPane.showMessageDialog(rootPane, ex);
+
             }
         }});
         btnSaveImg.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-               String sql = "update Student_info set Photo=? where Student_id=?";
+               String value1 = txtStudentId.getText();
+               String sql = "update Student_info set Photo=? where Student_id='" + value1 + "'  ";
             try { 
                 pst = connection.prepareStatement(sql);
                 pst.setBytes(1, personImg);
-                pst.setString(2, txtStudentId.getText());
+                pst.execute();
                 JOptionPane.showMessageDialog(panelCont, "Image saved");
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(panelCont, ex);
@@ -1474,7 +1552,7 @@ private void init() {
                     pst.execute();
                     JOptionPane.showMessageDialog(null, "Saved");
                 } catch (Exception ex) {
-                    JOptionPane.showMessageDialog(null, "Error, some data are not entered");
+                    JOptionPane.showMessageDialog(rootPane, ex);
                 }
                 updateDoc();
             }
@@ -1495,14 +1573,22 @@ private void init() {
                         txtDocName.setText(rs.getString("Doc_name"));
                         txtDocAttach.setText(rs.getString("Path"));
                     
-                        try {
-                        Desktop.getDesktop().open(new File( (String) tblDoc.getValueAt(row, 3)));
-                        } catch (IOException ex) {
-                            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
-                        } 
+//                        try {
+//                        Desktop.getDesktop().open(new File( (String) tblDoc.getValueAt(row, 3)));
+//                        } catch (IOException ex) {
+//                            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
+//                        } 
                     }
                 }catch (SQLException ex) {
                     JOptionPane.showMessageDialog(rootPane, ex);
+                }
+                
+                int row = tblDoc.getSelectedRow();
+                String value = (tblDoc.getModel().getValueAt(row, 3).toString());
+                try {
+                    Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + value);
+                } catch (Exception en) {
+                    JOptionPane.showMessageDialog(rootPane, "Error");
                 }
             }
         });
@@ -1510,19 +1596,20 @@ private void init() {
         btnDocDelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int p = JOptionPane.showConfirmDialog(panelCont, "Do you want to delete ?", "Delete", JOptionPane.YES_NO_OPTION);
-                if (p == 0) {
+//                int p = JOptionPane.showConfirmDialog(panelCont, "Do you want to delete ?", "Delete", JOptionPane.YES_NO_OPTION);
+//                if (p == 0) {
                     String sql = "delete from Doc_table where Doc_id=?";
                     try {
                         pst = connection.prepareStatement(sql);
                         pst.setString(1, txtDocID.getText());
                         pst.execute();
                         JOptionPane.showMessageDialog(rootPane, "Deleted");
-                    } catch (SQLException ex) {
+                        updateDoc();
+                    } catch (SQLException | HeadlessException ex) {
                         JOptionPane.showMessageDialog(rootPane, ex);
                     }
-                    updateDoc();
-                }
+//                    updateDoc();
+//                }
             }
         });
     
@@ -1536,6 +1623,34 @@ private void init() {
                 
             }
         });
+    }
+    
+    private final void currentTime(){
+    
+//         dynamic date and time
+         Thread threadClock = new Thread() {
+         @Override
+         public void run() {
+            for (;;) {
+               Calendar cal = new GregorianCalendar();
+
+               int second = cal.get(Calendar.SECOND);
+               int minute = cal.get(Calendar.MINUTE);
+               int hour = cal.get(Calendar.HOUR);
+               mnuRealTime.setText("Current Time: " + hour + " : " + minute + " : " + second);
+               mnuRealTime.setForeground(Color.GREEN);
+               try {
+               sleep(1000);
+               } catch (InterruptedException ex) {
+                   System.out.println(ex.getMessage());
+      //         Logger.getLogger(AddUser_Jframe.class.getName()).log(Level.SEVERE, null, ex);
+               }
+            }
+         }
+         };
+         threadClock.start(); 
+        
+    
     }
 
 }
