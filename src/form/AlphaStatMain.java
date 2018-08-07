@@ -7,37 +7,55 @@ package form;
 
 import datetime.CurrentDateAndTime;
 import db_connect.JavaDBConnect;
-import event.SearchEvent;
-import java.awt.Color;
 import java.awt.Desktop;
+import com.itextpdf.text.Document;
+ 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+ 
+import static java.lang.Thread.sleep;
+import java.net.URI; 
+import snap.Snap; 
+
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.Barcode;
+import com.itextpdf.text.pdf.BarcodeEAN;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import static java.lang.Thread.sleep;
-import java.net.URI;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -45,19 +63,21 @@ import java.util.logging.Logger;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.activation.FileDataSource;
-import javax.imageio.ImageIO;
-import javax.mail.Session;
 import javax.swing.ImageIcon;
-import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import net.proteanit.sql.DbUtils;
-import snap.Snap;
-import javax.mail.*;
+import javax.imageio.ImageIO;
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
+import javax.swing.JFileChooser; 
 
 /**
  *
@@ -68,8 +88,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
     private Connection connection = null;
     private PreparedStatement pst = null;
     private ResultSet rs = null;
-    private byte[] personImg = null;
-    private  String filePath = null;
+   
     
     public AlphaStatMain() {
         initComponents();
@@ -93,15 +112,34 @@ public class AlphaStatMain extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         jToolBar1 = new javax.swing.JToolBar();
         btnSingOut = new javax.swing.JButton();
         btnOffHelp = new javax.swing.JButton();
         panelCont = new javax.swing.JPanel();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         panelDataTable = new javax.swing.JPanel();
-        jScrollPane1 = new javax.swing.JScrollPane();
+        jScrollPaneStudentInfo = new javax.swing.JScrollPane();
         tblStudentInfo = new javax.swing.JTable();
-        panelChart = new javax.swing.JPanel();
+        panelReport = new javax.swing.JPanel();
+        jScrollPaneComment = new javax.swing.JScrollPane();
+        tAreaComment = new javax.swing.JTextArea();
+        lblComment = new javax.swing.JLabel();
+        lblHealthStatus = new javax.swing.JLabel();
+        rbtnHealthStatus1 = new javax.swing.JRadioButton();
+        rbtnHealthStatus2 = new javax.swing.JRadioButton();
+        buttonReport = new javax.swing.JButton();
+        jCheckBox1 = new javax.swing.JCheckBox();
+        jCheckBox2 = new javax.swing.JCheckBox();
+        lblAttachment = new javax.swing.JLabel();
+        panelIndicator = new javax.swing.JPanel();
+        lblIndicatorAge = new javax.swing.JLabel();
+        sliderAge = new javax.swing.JSlider();
+        lblIndicatorHeight = new javax.swing.JLabel();
+        sliderWeight = new javax.swing.JSlider();
+        lblIndicatorWeight = new javax.swing.JLabel();
+        sliderHeight = new javax.swing.JSlider();
         panelStatistics = new javax.swing.JPanel();
         panelEmail = new javax.swing.JPanel();
         mainPanel = new javax.swing.JPanel();
@@ -184,10 +222,11 @@ public class AlphaStatMain extends javax.swing.JFrame {
         mnuIteamAbout = new javax.swing.JMenu();
         mIteamAboutMe = new javax.swing.JMenuItem();
         mnuIteamDate = new javax.swing.JMenu();
-        mnuIteamTime = new javax.swing.JMenu();
+        mnuLoggedTime = new javax.swing.JMenu();
         mnuRealTime = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Main window");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jToolBar1.setFloatable(false);
@@ -241,7 +280,201 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 tblStudentInfoMouseClicked(evt);
             }
         });
-        jScrollPane1.setViewportView(tblStudentInfo);
+        jScrollPaneStudentInfo.setViewportView(tblStudentInfo);
+
+        panelReport.setBackground(new java.awt.Color(204, 204, 255));
+        panelReport.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Report", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Agency FB", 0, 14), new java.awt.Color(0, 0, 102))); // NOI18N
+
+        tAreaComment.setColumns(20);
+        tAreaComment.setRows(5);
+        tAreaComment.setToolTipText("");
+        jScrollPaneComment.setViewportView(tAreaComment);
+        tAreaComment.getAccessibleContext().setAccessibleDescription("");
+
+        lblComment.setFont(new java.awt.Font("Agency FB", 0, 14)); // NOI18N
+        lblComment.setForeground(new java.awt.Color(0, 0, 102));
+        lblComment.setText("Comment");
+
+        lblHealthStatus.setFont(new java.awt.Font("Agency FB", 0, 14)); // NOI18N
+        lblHealthStatus.setForeground(new java.awt.Color(0, 0, 102));
+        lblHealthStatus.setText("Health Status");
+
+        buttonGroup1.add(rbtnHealthStatus1);
+        rbtnHealthStatus1.setFont(new java.awt.Font("Adobe Hebrew", 1, 14)); // NOI18N
+        rbtnHealthStatus1.setForeground(new java.awt.Color(0, 153, 51));
+        rbtnHealthStatus1.setText("Good");
+        rbtnHealthStatus1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbtnHealthStatus1ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup1.add(rbtnHealthStatus2);
+        rbtnHealthStatus2.setFont(new java.awt.Font("Adobe Hebrew", 1, 14)); // NOI18N
+        rbtnHealthStatus2.setForeground(new java.awt.Color(204, 0, 0));
+        rbtnHealthStatus2.setText("Not Good");
+        rbtnHealthStatus2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                rbtnHealthStatus2ActionPerformed(evt);
+            }
+        });
+
+        buttonReport.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+        buttonReport.setForeground(new java.awt.Color(0, 0, 102));
+        buttonReport.setText("Generate Report");
+        buttonReport.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                buttonReportActionPerformed(evt);
+            }
+        });
+
+        buttonGroup2.add(jCheckBox1);
+        jCheckBox1.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jCheckBox1.setForeground(new java.awt.Color(0, 0, 102));
+        jCheckBox1.setText("Include Chart");
+        jCheckBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox1ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup2.add(jCheckBox2);
+        jCheckBox2.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
+        jCheckBox2.setForeground(new java.awt.Color(0, 0, 102));
+        jCheckBox2.setText("No Chart");
+        jCheckBox2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jCheckBox2ActionPerformed(evt);
+            }
+        });
+
+        lblAttachment.setFont(new java.awt.Font("Agency FB", 0, 14)); // NOI18N
+        lblAttachment.setForeground(new java.awt.Color(0, 0, 102));
+        lblAttachment.setText("Attachment");
+
+        javax.swing.GroupLayout panelReportLayout = new javax.swing.GroupLayout(panelReport);
+        panelReport.setLayout(panelReportLayout);
+        panelReportLayout.setHorizontalGroup(
+            panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelReportLayout.createSequentialGroup()
+                .addGroup(panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(panelReportLayout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addGroup(panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(lblAttachment, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(lblHealthStatus, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(panelReportLayout.createSequentialGroup()
+                                .addComponent(jCheckBox1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jCheckBox2)
+                                .addGap(0, 0, Short.MAX_VALUE))
+                            .addGroup(panelReportLayout.createSequentialGroup()
+                                .addComponent(rbtnHealthStatus1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(rbtnHealthStatus2)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lblComment))))
+                    .addGroup(panelReportLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(buttonReport, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(128, 128, 128)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPaneComment, javax.swing.GroupLayout.PREFERRED_SIZE, 415, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        panelReportLayout.setVerticalGroup(
+            panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelReportLayout.createSequentialGroup()
+                .addGroup(panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPaneComment, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 106, Short.MAX_VALUE)
+                    .addGroup(panelReportLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lblComment)
+                            .addComponent(lblHealthStatus)
+                            .addComponent(rbtnHealthStatus1)
+                            .addComponent(rbtnHealthStatus2))
+                        .addGap(5, 5, 5)
+                        .addGroup(panelReportLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jCheckBox1)
+                            .addComponent(jCheckBox2)
+                            .addComponent(lblAttachment))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(buttonReport)))
+                .addGap(0, 39, Short.MAX_VALUE))
+        );
+
+        panelIndicator.setBorder(javax.swing.BorderFactory.createTitledBorder(javax.swing.BorderFactory.createEtchedBorder(), "Indicator", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Agency FB", 0, 16), new java.awt.Color(0, 0, 102))); // NOI18N
+        panelIndicator.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
+
+        lblIndicatorAge.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblIndicatorAge.setText("Age");
+
+        sliderAge.setBackground(new java.awt.Color(153, 153, 255));
+        sliderAge.setMajorTickSpacing(20);
+        sliderAge.setMinorTickSpacing(5);
+        sliderAge.setPaintLabels(true);
+        sliderAge.setPaintTicks(true);
+        sliderAge.setValue(0);
+
+        lblIndicatorHeight.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblIndicatorHeight.setText("Height");
+
+        sliderWeight.setBackground(new java.awt.Color(153, 153, 255));
+        sliderWeight.setMajorTickSpacing(20);
+        sliderWeight.setMaximum(120);
+        sliderWeight.setMinorTickSpacing(5);
+        sliderWeight.setPaintLabels(true);
+        sliderWeight.setPaintTicks(true);
+        sliderWeight.setValue(0);
+
+        lblIndicatorWeight.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
+        lblIndicatorWeight.setText("Weight");
+
+        sliderHeight.setBackground(new java.awt.Color(153, 153, 255));
+        sliderHeight.setMajorTickSpacing(40);
+        sliderHeight.setMaximum(220);
+        sliderHeight.setMinorTickSpacing(10);
+        sliderHeight.setPaintLabels(true);
+        sliderHeight.setPaintTicks(true);
+        sliderHeight.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+
+        javax.swing.GroupLayout panelIndicatorLayout = new javax.swing.GroupLayout(panelIndicator);
+        panelIndicator.setLayout(panelIndicatorLayout);
+        panelIndicatorLayout.setHorizontalGroup(
+            panelIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelIndicatorLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panelIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(lblIndicatorAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblIndicatorHeight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(lblIndicatorWeight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(34, 34, 34)
+                .addGroup(panelIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(sliderAge, javax.swing.GroupLayout.DEFAULT_SIZE, 325, Short.MAX_VALUE)
+                    .addComponent(sliderHeight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(sliderWeight, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(24, Short.MAX_VALUE))
+        );
+        panelIndicatorLayout.setVerticalGroup(
+            panelIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelIndicatorLayout.createSequentialGroup()
+                .addGap(38, 38, 38)
+                .addGroup(panelIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sliderAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblIndicatorAge, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(panelIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sliderHeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblIndicatorHeight, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
+                .addGroup(panelIndicatorLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(sliderWeight, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(lblIndicatorWeight, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout panelDataTableLayout = new javax.swing.GroupLayout(panelDataTable);
         panelDataTable.setLayout(panelDataTableLayout);
@@ -249,31 +482,28 @@ public class AlphaStatMain extends javax.swing.JFrame {
             panelDataTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelDataTableLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 785, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(484, Short.MAX_VALUE))
+                .addGroup(panelDataTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(panelReport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPaneStudentInfo, javax.swing.GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE))
+                .addGap(18, 18, 18)
+                .addComponent(panelIndicator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(16, Short.MAX_VALUE))
         );
         panelDataTableLayout.setVerticalGroup(
             panelDataTableLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelDataTableLayout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDataTableLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(180, Short.MAX_VALUE))
+                .addComponent(jScrollPaneStudentInfo, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(4, 4, 4)
+                .addComponent(panelReport, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelDataTableLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(panelIndicator, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
         );
 
         jTabbedPane1.addTab(" Data table ", panelDataTable);
-
-        javax.swing.GroupLayout panelChartLayout = new javax.swing.GroupLayout(panelChart);
-        panelChart.setLayout(panelChartLayout);
-        panelChartLayout.setHorizontalGroup(
-            panelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1275, Short.MAX_VALUE)
-        );
-        panelChartLayout.setVerticalGroup(
-            panelChartLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 306, Short.MAX_VALUE)
-        );
-
-        jTabbedPane1.addTab(" Chart ", panelChart);
 
         javax.swing.GroupLayout panelStatisticsLayout = new javax.swing.GroupLayout(panelStatistics);
         panelStatistics.setLayout(panelStatisticsLayout);
@@ -892,8 +1122,8 @@ public class AlphaStatMain extends javax.swing.JFrame {
         mnuIteamDate.setText(" Date ");
         menuBarMain.add(mnuIteamDate);
 
-        mnuIteamTime.setText(" Time ");
-        menuBarMain.add(mnuIteamTime);
+        mnuLoggedTime.setText(" Time ");
+        menuBarMain.add(mnuLoggedTime);
 
         mnuRealTime.setText(" Time2 ");
         menuBarMain.add(mnuRealTime);
@@ -975,9 +1205,9 @@ public class AlphaStatMain extends javax.swing.JFrame {
             rs = pst.executeQuery();
             if (rs.next()) {
                 getValue();
+                showSliderData();
             }
         } catch (SQLException ex) {
-            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, ex);
         }
     }//GEN-LAST:event_tblStudentShowInfoMouseClicked
@@ -992,9 +1222,9 @@ public class AlphaStatMain extends javax.swing.JFrame {
                 rs = pst.executeQuery();
                 if (rs.next()) {
                     getValue();
+                    showSliderData();
                 }
             } catch (SQLException ex) {
-                Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
                 JOptionPane.showMessageDialog(rootPane, ex);
             }
         }
@@ -1002,7 +1232,19 @@ public class AlphaStatMain extends javax.swing.JFrame {
     }//GEN-LAST:event_tblStudentShowInfoKeyReleased
 
     private void tblStudentInfoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblStudentInfoMouseClicked
-        // TODO add your handling code here:
+        try {
+            int row = tblStudentInfo.getSelectedRow();
+            String tableClick = (tblStudentInfo.getModel().getValueAt(row, 0).toString());
+            String sql = "Select * from Student_info where Student_id = '" + tableClick + "'";
+            pst = connection.prepareStatement(sql);
+            rs = pst.executeQuery();
+            if (rs.next()) {
+                getValue();
+                showSliderData();
+            }
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(rootPane, ex);
+        }
     }//GEN-LAST:event_tblStudentInfoMouseClicked
 
     private void mIteamOffHelpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_mIteamOffHelpActionPerformed
@@ -1038,6 +1280,120 @@ public class AlphaStatMain extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_mIteamAboutMeActionPerformed
 
+    private void rbtnHealthStatus1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnHealthStatus1ActionPerformed
+        status = "Good. No need action. ";
+    }//GEN-LAST:event_rbtnHealthStatus1ActionPerformed
+
+    private void rbtnHealthStatus2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbtnHealthStatus2ActionPerformed
+        status = "Not Good. Need to be careful! ";
+    }//GEN-LAST:event_rbtnHealthStatus2ActionPerformed
+
+     
+    private void buttonReportActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonReportActionPerformed
+        
+        //writing document
+        try {
+            Document document = new Document() ;
+            PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream("Report.pdf"));
+            document.open();
+
+            //barcode generator
+            PdfContentByte CB = writer.getDirectContent();
+            BarcodeEAN codeEAN = new BarcodeEAN();
+            codeEAN.setCode("1234567891011");
+            Paragraph para = new Paragraph();
+            document.add(new Paragraph("Barcode UDCA"));
+            codeEAN.setCodeType(Barcode.UPCA);
+            codeEAN.setCode("1110987654321");
+            document.add(codeEAN.createImageWithBarcode(CB, BaseColor.BLACK, BaseColor.BLACK));
+            document.add(para);
+
+            //add image
+            com.itextpdf.text.Image image = com.itextpdf.text.Image.getInstance("Files\\star.jpg");
+            document.add(image);
+
+            document.add(new Paragraph("Student Report", FontFactory.getFont(
+                FontFactory.TIMES_BOLD, 18, Font.BOLD, BaseColor.RED)));
+            //add date
+            document.add(new Paragraph(new Date().toString()));
+
+            document.add(new Paragraph("***************************"
+                + "******************************************"
+                + "*******************************************"));
+
+            //add table
+            document.add(new Paragraph(" "));
+            document.add(new Chunk("Data Table : ", FontFactory.getFont(
+                FontFactory.TIMES_BOLD, 16, Font.UNDERLINE, BaseColor.BLUE)));
+            PdfPTable table = new PdfPTable(2);
+
+            PdfPCell cell = new PdfPCell(new Paragraph("Report"));
+            cell.setColspan(8);
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setBackgroundColor(BaseColor.GREEN);
+            cell.setPadding(10.0f);
+            table.addCell(cell);
+            
+        //add cell info            
+            table.addCell("Student Id");
+            table.addCell(txtStudentId.getText());
+            table.addCell("First Name");
+            table.addCell(txtFirstName.getText());
+            table.addCell("Last Name");
+            table.addCell(txtLastName.getText());
+            table.addCell("Department");
+            table.addCell(txtDepartment.getText());
+            table.addCell("Age");
+            table.addCell(txtAge.getText());
+            table.addCell("Height");
+            table.addCell(txtHeight.getText());
+            table.addCell("Weight");
+            table.addCell(txtWeight.getText());
+            table.addCell("Gender");
+            table.addCell((String) comboGender.getSelectedItem());
+            table.addCell("Blood Group");
+            table.addCell(txtBlood.getText());
+            document.add(table);
+
+            // add student status  
+            document.add(new Paragraph(" "));
+            document.add(new Chunk("Health Status : ", FontFactory.getFont(
+                FontFactory.TIMES_BOLD, 16, Font.NORMAL, BaseColor.BLUE)));
+            document.add(new Chunk(status));
+            // add comment  
+            document.add(new Paragraph(" "));
+            document.add(new Chunk("Comment :", FontFactory.getFont(
+                    FontFactory.TIMES_BOLD, 16, Font.UNDERLINE, BaseColor.BLUE)));
+            document.add(new Chunk(tAreaComment.getText()));
+            
+            //add chart    
+            //-   not yet implemented   -
+//            if (("checked".equals(decision))) {
+//                document.add(new Paragraph(" "));
+//                document.add(new Paragraph("Chart :", FontFactory.getFont(
+//                    FontFactory.TIMES_BOLD, 16, Font.UNDERLINE, BaseColor.BLUE)));
+//                    com.itextpdf.text.Image imgChart = com.itextpdf.text.Image.getInstance("Chart.png");
+//                    //imgChart.setRotation(45.0f);
+//                    imgChart.scaleAbsolute(520, 300);
+//                    document.add(imgChart);
+//            } 
+            document.add(new Paragraph(" "));
+
+            document.close(); 
+            JOptionPane.showMessageDialog(rootPane, "Report is saved.");
+            } catch (DocumentException | IOException | HeadlessException e) {
+                JOptionPane.showMessageDialog(rootPane, e);
+            }
+    }//GEN-LAST:event_buttonReportActionPerformed
+
+    private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
+        decision = "checked";
+    }//GEN-LAST:event_jCheckBox1ActionPerformed
+
+    private void jCheckBox2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox2ActionPerformed
+        decision = "Not ckecked";
+    }//GEN-LAST:event_jCheckBox2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -1054,15 +1410,11 @@ public class AlphaStatMain extends javax.swing.JFrame {
                     break;
                 }
             }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(AlphaStatMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(AlphaStatMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(AlphaStatMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(AlphaStatMain.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
+        
         //</editor-fold>
 
         /* Create and display the form */
@@ -1073,103 +1425,7 @@ public class AlphaStatMain extends javax.swing.JFrame {
             }
         });
     }
-
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnAdd;
-    private javax.swing.JButton btnAttach;
-    private javax.swing.JButton btnClear;
-    private javax.swing.JButton btnDelete;
-    private javax.swing.JButton btnDocAdd;
-    private javax.swing.JButton btnDocAttach;
-    private javax.swing.JButton btnDocClear;
-    private javax.swing.JButton btnDocDelete;
-    private javax.swing.JButton btnEdit;
-    private javax.swing.JButton btnImageUpload;
-    private javax.swing.JButton btnOffHelp;
-    private javax.swing.JButton btnSaveImg;
-    private javax.swing.JButton btnSearch;
-    private javax.swing.JButton btnSendMail;
-    private javax.swing.JButton btnSingOut;
-    private javax.swing.JComboBox<String> comboGender;
-    private javax.swing.JPanel documentPanel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JPanel jPanelCommands;
-    private javax.swing.JPanel jPanelWelcome;
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JScrollPane jScrollPane4;
-    private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JToolBar jToolBar1;
-    private javax.swing.JLabel lblAge;
-    private javax.swing.JLabel lblBlood;
-    private javax.swing.JLabel lblDepartment;
-    private javax.swing.JLabel lblFirstName;
-    private javax.swing.JLabel lblFrom;
-    private javax.swing.JLabel lblGender;
-    private javax.swing.JLabel lblHeight;
-    private javax.swing.JLabel lblImage;
-    private javax.swing.JLabel lblLastName;
-    private javax.swing.JLabel lblPassword;
-    private javax.swing.JLabel lblStudentId;
-    private javax.swing.JLabel lblSubject;
-    private javax.swing.JLabel lblTo;
-    private javax.swing.JLabel lblWeight;
-    private javax.swing.JLabel lblWelcome;
-    private javax.swing.JMenuItem mIteamAboutMe;
-    private javax.swing.JMenuItem mIteamClose;
-    private javax.swing.JMenuItem mIteamExit;
-    private javax.swing.JMenuItem mIteamOffHelp;
-    private javax.swing.JMenuItem mIteamSnap;
-    private javax.swing.JMenuItem mItemWebHelp;
-    private javax.swing.JPanel mainPanel;
-    private javax.swing.JMenuBar menuBarMain;
-    private javax.swing.JMenu mnuIteamAbout;
-    private javax.swing.JMenu mnuIteamDate;
-    private javax.swing.JMenu mnuIteamEdit;
-    private javax.swing.JMenu mnuIteamFile;
-    private javax.swing.JMenu mnuIteamHelp;
-    private javax.swing.JMenu mnuIteamTime;
-    private javax.swing.JMenu mnuRealTime;
-    private javax.swing.JPanel paneImgPlace;
-    private javax.swing.JPanel panelChart;
-    private javax.swing.JPanel panelCont;
-    private javax.swing.JPanel panelDataTable;
-    private javax.swing.JPanel panelDocument;
-    private javax.swing.JPanel panelEmail;
-    private javax.swing.JPanel panelPhoto;
-    private javax.swing.JPanel panelStatistics;
-    private javax.swing.JPanel panelStudentInfo;
-    private javax.swing.JPanel panelTableStudentShowInfo;
-    private javax.swing.JTable tblDoc;
-    private javax.swing.JTable tblStudentInfo;
-    private javax.swing.JTable tblStudentShowInfo;
-    private javax.swing.JTextField txtAge;
-    private javax.swing.JTextArea txtAreaMessage;
-    private javax.swing.JTextField txtAttachFile;
-    private javax.swing.JTextField txtAttachName;
-    private javax.swing.JTextField txtBlood;
-    private javax.swing.JTextField txtDepartment;
-    private javax.swing.JTextField txtDocAttach;
-    private javax.swing.JTextField txtDocID;
-    private javax.swing.JTextField txtDocName;
-    private javax.swing.JTextField txtDocSId;
-    private javax.swing.JTextField txtFirstName;
-    private javax.swing.JTextField txtFrom;
-    private javax.swing.JTextField txtHeight;
-    private javax.swing.JTextField txtImageUpload;
-    private javax.swing.JTextField txtLastName;
-    private javax.swing.JPasswordField txtPassword;
-    private javax.swing.JTextField txtSearch;
-    private javax.swing.JTextField txtStudentId;
-    private javax.swing.JTextField txtSubject;
-    private javax.swing.JTextField txtTo;
-    private javax.swing.JTextField txtWeight;
-    // End of variables declaration//GEN-END:variables
-private void init() {
+    private void init() {
         setLocationRelativeTo(this);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setResizable(false);
@@ -1177,8 +1433,8 @@ private void init() {
         //settings title date and time
         mnuIteamDate.setText(CurrentDateAndTime.getCurrentDate());
         mnuIteamDate.setForeground(Color.blue);
-        mnuIteamTime.setText(CurrentDateAndTime.getLoggedTime());
-        mnuIteamTime.setForeground(Color.red);
+        mnuLoggedTime.setText(CurrentDateAndTime.getLoggedTime());
+        mnuLoggedTime.setForeground(Color.red);
 
     }
 
@@ -1194,7 +1450,6 @@ private void init() {
             rs = pst.executeQuery();
             tblStudentInfo.setModel(DbUtils.resultSetToTableModel(rs));
         } catch (SQLException ex) {
-            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, ex);
         }
 
@@ -1207,7 +1462,6 @@ private void init() {
             rs = pst.executeQuery();
             tblStudentShowInfo.setModel(DbUtils.resultSetToTableModel(rs));
         } catch (SQLException ex) {
-            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(rootPane, ex);
         } 
     }
@@ -1237,12 +1491,17 @@ private void init() {
 
             // byte format of image
             byte[] imageData = rs.getBytes("Photo");
-            ImageIcon format = new ImageIcon(scaledImage(imageData, lblImage.getWidth(), lblImage.getHeight()));
-            lblImage.setIcon(format);
-        } catch (SQLException ex) {
-            Logger.getLogger(AlphaStatMain.class.getName()).log(Level.SEVERE, null, ex);
-            JOptionPane.showMessageDialog(rootPane, ex);
-        }
+            if(imageData !=null){
+                ImageIcon format = new ImageIcon(scaledImage(imageData, lblImage.getWidth(), lblImage.getHeight()));
+                lblImage.setIcon(format);
+            } else { 
+                lblImage.setIcon(null); 
+                throw new NullPointerException();}    
+        } catch (SQLException | NullPointerException ex) { 
+            if (ex.getClass().getName().equals("SQLException")){
+                JOptionPane.showMessageDialog(rootPane, ex);}
+            else{JOptionPane.showMessageDialog(rootPane, "You dont have image");}
+        } 
     }
 
     private Image scaledImage(byte[] img, int w, int h) {
@@ -1251,7 +1510,7 @@ private void init() {
             Graphics2D g2 = resizedImage.createGraphics();
             g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-            //convert byte arrat back to buffered image
+            //convert byte array back to buffered image
             ByteArrayInputStream in = new ByteArrayInputStream(img);
             BufferedImage bImageFromConvert = ImageIO.read(in);
 
@@ -1272,7 +1531,8 @@ private void init() {
         txtHeight.setText(null);
         txtWeight.setText(null);
         txtBlood.setText(null);
-        comboGender.setSelectedItem("Male");
+        comboGender.setSelectedItem("Male"); 
+        lblImage.setIcon(null); 
     }
 
 //    private void setSearchListener(){
@@ -1291,7 +1551,7 @@ private void init() {
 
             @Override
             public void focusLost(FocusEvent e) {
-                txtSearch.setText("Search ( by id )");
+                txtSearch.setText("Search by id...");
             }
         });
         txtSearch.addKeyListener(new KeyListener() {
@@ -1382,7 +1642,7 @@ private void init() {
         btnDelete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int p = JOptionPane.showConfirmDialog(panelCont, "Do you want to delete ?", "Delete", JOptionPane.YES_NO_OPTION);
+                int p = JOptionPane.showConfirmDialog(rootPane, "Do you want to delete ?", "Delete", JOptionPane.YES_NO_OPTION);
                 if (p == 0) {
                     String sql = "delete from Student_info where Student_id=?";
                     try {
@@ -1416,7 +1676,7 @@ private void init() {
         btnImageUpload.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {                
-           JFileChooser chooser = new JFileChooser();
+            JFileChooser chooser = new JFileChooser();
             chooser.showOpenDialog(null);
 
             File fileChoosen = chooser.getSelectedFile();
@@ -1432,8 +1692,7 @@ private void init() {
                 }
                 personImg = bAOS.toByteArray();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(rootPane, ex);
-
+                JOptionPane.showMessageDialog(rootPane, ex); 
             }
         }});
         btnSaveImg.addActionListener(new ActionListener() {
@@ -1445,9 +1704,9 @@ private void init() {
                 pst = connection.prepareStatement(sql);
                 pst.setBytes(1, personImg);
                 pst.execute();
-                JOptionPane.showMessageDialog(panelCont, "Image saved");
+                JOptionPane.showMessageDialog(rootPane, "Image saved");
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(panelCont, ex);
+                JOptionPane.showMessageDialog(rootPane, ex);
             }
             }
         });
@@ -1505,8 +1764,8 @@ private void init() {
                     
                     JOptionPane.showMessageDialog(rootPane, "Message sent");
                    
-                }catch(Exception ex){
-//                  JOptionPane.showMessageDialog(rootPane, ex);
+                }catch(Exception ex){ 
+                    ex.printStackTrace();
                     JOptionPane.showMessageDialog(rootPane, "Sending message failed", "Message dialog", JOptionPane.ERROR_MESSAGE);
 
                 }
@@ -1588,6 +1847,7 @@ private void init() {
                 try {
                     Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + value);
                 } catch (Exception en) {
+                    en.printStackTrace();
                     JOptionPane.showMessageDialog(rootPane, "Error");
                 }
             }
@@ -1619,15 +1879,14 @@ private void init() {
                 txtDocAttach.setText(null);
                 txtDocID.setText(null);
                 txtDocName.setText(null);
-                txtDocSId.setText(null);
-                
+                txtDocSId.setText(null); 
             }
         });
     }
     
     private final void currentTime(){
     
-//         dynamic date and time
+        // dynamic date and time
          Thread threadClock = new Thread() {
          @Override
          public void run() {
@@ -1637,20 +1896,144 @@ private void init() {
                int second = cal.get(Calendar.SECOND);
                int minute = cal.get(Calendar.MINUTE);
                int hour = cal.get(Calendar.HOUR);
-               mnuRealTime.setText("Current Time: " + hour + " : " + minute + " : " + second);
+               mnuRealTime.setText("Current Time: " + hour + " h : " + minute + " min : " + second +" sec");
                mnuRealTime.setForeground(Color.GREEN);
                try {
                sleep(1000);
                } catch (InterruptedException ex) {
-                   System.out.println(ex.getMessage());
-      //         Logger.getLogger(AddUser_Jframe.class.getName()).log(Level.SEVERE, null, ex);
+                System.out.println(ex.getMessage());
                }
             }
-         }
-         };
-         threadClock.start(); 
-        
-    
+        }
+        };
+        threadClock.start();  
     }
-
+     private void showSliderData() {
+        sliderAge.setValue((int) Float.parseFloat(txtAge.getText()));
+        sliderHeight.setValue((int) Float.parseFloat(txtHeight.getText()));
+        sliderWeight.setValue((int) Float.parseFloat(txtWeight.getText()));
+    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAdd;
+    private javax.swing.JButton btnAttach;
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnDelete;
+    private javax.swing.JButton btnDocAdd;
+    private javax.swing.JButton btnDocAttach;
+    private javax.swing.JButton btnDocClear;
+    private javax.swing.JButton btnDocDelete;
+    private javax.swing.JButton btnEdit;
+    private javax.swing.JButton btnImageUpload;
+    private javax.swing.JButton btnOffHelp;
+    private javax.swing.JButton btnSaveImg;
+    private javax.swing.JButton btnSearch;
+    private javax.swing.JButton btnSendMail;
+    private javax.swing.JButton btnSingOut;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
+    private javax.swing.JButton buttonReport;
+    private javax.swing.JComboBox<String> comboGender;
+    private javax.swing.JPanel documentPanel;
+    private javax.swing.JCheckBox jCheckBox1;
+    private javax.swing.JCheckBox jCheckBox2;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JPanel jPanelCommands;
+    private javax.swing.JPanel jPanelWelcome;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JScrollPane jScrollPane4;
+    private javax.swing.JScrollPane jScrollPaneComment;
+    private javax.swing.JScrollPane jScrollPaneStudentInfo;
+    private javax.swing.JTabbedPane jTabbedPane1;
+    private javax.swing.JToolBar jToolBar1;
+    private javax.swing.JLabel lblAge;
+    private javax.swing.JLabel lblAttachment;
+    private javax.swing.JLabel lblBlood;
+    private javax.swing.JLabel lblComment;
+    private javax.swing.JLabel lblDepartment;
+    private javax.swing.JLabel lblFirstName;
+    private javax.swing.JLabel lblFrom;
+    private javax.swing.JLabel lblGender;
+    private javax.swing.JLabel lblHealthStatus;
+    private javax.swing.JLabel lblHeight;
+    private javax.swing.JLabel lblImage;
+    private javax.swing.JLabel lblIndicatorAge;
+    private javax.swing.JLabel lblIndicatorHeight;
+    private javax.swing.JLabel lblIndicatorWeight;
+    private javax.swing.JLabel lblLastName;
+    private javax.swing.JLabel lblPassword;
+    private javax.swing.JLabel lblStudentId;
+    private javax.swing.JLabel lblSubject;
+    private javax.swing.JLabel lblTo;
+    private javax.swing.JLabel lblWeight;
+    private javax.swing.JLabel lblWelcome;
+    private javax.swing.JMenuItem mIteamAboutMe;
+    private javax.swing.JMenuItem mIteamClose;
+    private javax.swing.JMenuItem mIteamExit;
+    private javax.swing.JMenuItem mIteamOffHelp;
+    private javax.swing.JMenuItem mIteamSnap;
+    private javax.swing.JMenuItem mItemWebHelp;
+    private javax.swing.JPanel mainPanel;
+    private javax.swing.JMenuBar menuBarMain;
+    private javax.swing.JMenu mnuIteamAbout;
+    private javax.swing.JMenu mnuIteamDate;
+    private javax.swing.JMenu mnuIteamEdit;
+    private javax.swing.JMenu mnuIteamFile;
+    private javax.swing.JMenu mnuIteamHelp;
+    private javax.swing.JMenu mnuLoggedTime;
+    private javax.swing.JMenu mnuRealTime;
+    private javax.swing.JPanel paneImgPlace;
+    private javax.swing.JPanel panelCont;
+    private javax.swing.JPanel panelDataTable;
+    private javax.swing.JPanel panelDocument;
+    private javax.swing.JPanel panelEmail;
+    private javax.swing.JPanel panelIndicator;
+    private javax.swing.JPanel panelPhoto;
+    private javax.swing.JPanel panelReport;
+    private javax.swing.JPanel panelStatistics;
+    private javax.swing.JPanel panelStudentInfo;
+    private javax.swing.JPanel panelTableStudentShowInfo;
+    private javax.swing.JRadioButton rbtnHealthStatus1;
+    private javax.swing.JRadioButton rbtnHealthStatus2;
+    private javax.swing.JSlider sliderAge;
+    private javax.swing.JSlider sliderHeight;
+    private javax.swing.JSlider sliderWeight;
+    private javax.swing.JTextArea tAreaComment;
+    private javax.swing.JTable tblDoc;
+    private javax.swing.JTable tblStudentInfo;
+    private javax.swing.JTable tblStudentShowInfo;
+    private javax.swing.JTextField txtAge;
+    private javax.swing.JTextArea txtAreaMessage;
+    private javax.swing.JTextField txtAttachFile;
+    private javax.swing.JTextField txtAttachName;
+    private javax.swing.JTextField txtBlood;
+    private javax.swing.JTextField txtDepartment;
+    private javax.swing.JTextField txtDocAttach;
+    private javax.swing.JTextField txtDocID;
+    private javax.swing.JTextField txtDocName;
+    private javax.swing.JTextField txtDocSId;
+    private javax.swing.JTextField txtFirstName;
+    private javax.swing.JTextField txtFrom;
+    private javax.swing.JTextField txtHeight;
+    private javax.swing.JTextField txtImageUpload;
+    private javax.swing.JTextField txtLastName;
+    private javax.swing.JPasswordField txtPassword;
+    private javax.swing.JTextField txtSearch;
+    private javax.swing.JTextField txtStudentId;
+    private javax.swing.JTextField txtSubject;
+    private javax.swing.JTextField txtTo;
+    private javax.swing.JTextField txtWeight;
+    // End of variables declaration//GEN-END:variables
+    
+    
+    private byte[] personImg = null;
+    private  String filePath = null;
+    
+     //variable declaration for report
+    private String status;
+    private String decision;
+    
 }

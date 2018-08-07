@@ -30,6 +30,5 @@ public class JavaDBConnect {
             JOptionPane.showMessageDialog(null, e); 
             return null;
         }
-    }
-    
+    } 
 }

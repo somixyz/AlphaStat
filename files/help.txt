@@ -1,9 +1,17 @@
+########################################################
+#### ALPHA STAT application ############################
+	Offline help
+########################################################
+########################################################
+
+Here we can find offlne help or tutorial about corectly using aplication.
 
 
-Offline help
-Here we can find tutorial about corectly using aplication
 
-
-
-under construction
+--> For now this offline help is 
+--> under construction
+--> it will be enabled as soon as posible
 .....
+
+
+Created by: Milos Dragovic
