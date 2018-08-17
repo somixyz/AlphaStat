@@ -226,7 +226,6 @@ public class AlphaStatMain extends javax.swing.JFrame {
         mnuRealTime = new javax.swing.JMenu();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Main window");
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         jToolBar1.setFloatable(false);
@@ -289,7 +288,6 @@ public class AlphaStatMain extends javax.swing.JFrame {
         tAreaComment.setRows(5);
         tAreaComment.setToolTipText("");
         jScrollPaneComment.setViewportView(tAreaComment);
-        tAreaComment.getAccessibleContext().setAccessibleDescription("");
 
         lblComment.setFont(new java.awt.Font("Agency FB", 0, 14)); // NOI18N
         lblComment.setForeground(new java.awt.Color(0, 0, 102));
