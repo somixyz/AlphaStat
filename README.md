@@ -4,7 +4,8 @@
 -------------------------------------------------------
 -------------------------------------------------------
 
-	Java Swing application about students informations and recording evidence
+	Java Swing application about students informations, recording evidence and some informaton about health.
+	
 	-> start in dist folder AlphaStat.jar
 	-> username/password:
 	->	Milos/1234
