@@ -22,3 +22,7 @@
 ![screenshot_2](https://user-images.githubusercontent.com/24499407/44242068-05f0d300-a1c8-11e8-81da-0988099350d8.jpg)
 
  
+
+
+---> development:
+----> for SQLlite database, gui view is available only with FireFox v56.0.2 and instaling brawser extension 'SQLlite Manager'
